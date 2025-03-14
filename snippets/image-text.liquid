@@ -1,0 +1,110 @@
+{% case snippet_instance.settings.text_width %}
+  {% when '1-2' %}
+    {% assign img_layout = 'medium-6 large-6 columns' %}
+    {% assign text_layout = 'medium-6 large-6 columns' %}
+  {% when '1-3' %}
+    {% assign img_layout = 'medium-8 large-8 columns' %}
+    {% assign text_layout = 'medium-4 large-4 columns' %}
+  {% when '2-3' %}
+    {% assign img_layout = 'medium-4 large-4 columns' %}
+    {% assign text_layout = 'medium-8 large-8 columns' %}
+  {% when '3-4' %}
+    {% assign img_layout = 'medium-3 large-3 columns' %}
+    {% assign text_layout = 'medium-9 large-9 columns' %}
+{% endcase %}
+
+<div class="content-section__inner row {% if snippet_instance.settings.align_horizontally %}image-text_middle{% endif %} {% if snippet_instance.settings.mobile_centered %}image-text_mobile-centered{% endif %}">
+  {% if snippet_instance.settings.alignment == 'left' %}
+    <div class="{{ img_layout }} image-text__img js-animate-appear-left">
+      {% if snippet_instance.settings.the_image != blank or snippet_instance.settings.svg_code != blank %}
+        {% if snippet_instance.settings.image_click_url == blank %}
+          <div class="image-text__img-wrap" style="width: {{ snippet_instance.settings.image_width }}px">
+        {% else %}
+          <a href="{{ snippet_instance.settings.image_click_url }}" class="image-text__img-wrap" style="width: {{ snippet_instance.settings.image_width }}px" title="{{ snippet_instance.settings.title }}">
+        {% endif %}
+
+        {% if snippet_instance.settings.the_image != blank %}
+          <img 
+            src="{{ snippet_instance.settings.the_image | img_url: '1024x' }}"          
+            loading="lazy"
+            width="{{ snippet_instance.settings.image_width }}"
+            height="{{ snippet_instance.settings.image_width | divided_by: snippet_instance.settings.the_image.aspect_ratio | ceil }}"          
+            alt="{{ snippet_instance.settings.title }}">
+        {% elsif snippet_instance.settings.svg_code != blank %}
+          {{ snippet_instance.settings.svg_code }}
+        {% endif %}
+
+        {% if snippet_instance.settings.image_click_url == blank %}
+          </div>
+        {% else %}
+          </a>
+        {% endif %}
+      {% endif %}
+    </div>
+  {% endif %}
+
+  <div class="{{ text_layout }} image-text__content js-animate-appear-show">
+    {% unless snippet_instance.settings.title == blank %}
+      <h2 class="image-text__title section__title-style">
+        {{ snippet_instance.settings.title | escape }}
+      </h2>
+    {% endunless %}
+    {% unless snippet_instance.settings.text == blank %}
+      <div class="rte image-text__text section__text-style">
+        {{ snippet_instance.settings.text }}
+      </div>
+    {% endunless %}
+    <div class="image-text__btns">
+      {% if snippet_type == 'section' %}
+        {% for block in snippet_instance.blocks %}
+          {% if block.settings.btn_link != blank %}
+            {% assign btn_id = block.id %}
+            {% render 'button-style', snippet_instance: block, button_id: btn_id, enable_button_style: true, btn_bg_color: block.settings.btn_bg_color, btn_style: block.settings.btn_style, btn_text_color: block.settings.btn_text_color %}
+            <a id="button-{{ btn_id }}" {{ block.shopify_attributes }} href="{{ block.settings.btn_link }}" class="button {% if block.settings.btn_style == 'hollow' %}hollow{% endif %}" >{{ block.settings.btn_text }}</a>
+          {% endif %}
+        {% endfor %}
+      {% else %}
+        {% if snippet_instance.settings.btn_link1 != blank %}
+          {% assign btn_id = block.id | append: '1' %}
+          {% render 'button-style', snippet_instance: snippet_instance, button_id: btn_id, enable_button_style: true, btn_bg_color: snippet_instance.settings.btn_bg_color1, btn_style: snippet_instance.settings.btn_style1, btn_text_color: snippet_instance.settings.btn_text_color1 %}
+          <a id="button-{{ btn_id }}" href="{{ snippet_instance.settings.btn_link1 }}" class="button {% if snippet_instance.settings.btn_style1 == 'hollow' %}hollow{% endif %}" >{{ snippet_instance.settings.btn_text1 }}</a>
+        {% endif %}
+        {% if snippet_instance.settings.btn_link2 != blank %}
+          {% assign btn_id = block.id | append: '2' %}
+          {% render 'button-style', snippet_instance: snippet_instance, button_id: btn_id, enable_button_style: true, btn_bg_color: snippet_instance.settings.btn_bg_color2, btn_style: snippet_instance.settings.btn_style2, btn_text_color: snippet_instance.settings.btn_text_color2 %}
+          <a id="button-{{ btn_id }}" href="{{ snippet_instance.settings.btn_link2 }}" class="button {% if snippet_instance.settings.btn_style2 == 'hollow' %}hollow{% endif %}">{{ snippet_instance.settings.btn_text2 }}</a>
+        {% endif %}
+      {% endif %}
+    </div>
+  </div>
+
+  {% if snippet_instance.settings.alignment == 'right' %}
+    <div class="{{ img_layout }} image-text__img js-animate-appear-right">
+      {% if snippet_instance.settings.the_image != blank or snippet_instance.settings.svg_code != blank %}
+        {% if snippet_instance.settings.image_click_url == blank %}
+          <div class="image-text__img-wrap" style="width: {{ snippet_instance.settings.image_width }}px">
+        {% else %}
+          <a href="{{ snippet_instance.settings.image_click_url }}" class="image-text__img-wrap" style="width: {{ snippet_instance.settings.image_width }}px" title="{{ snippet_instance.settings.title }}">
+        {% endif %}
+
+        {% if snippet_instance.settings.the_image != blank %}
+          <img 
+            src="{{ snippet_instance.settings.the_image | img_url: '1024x' }}"
+            width="{{ snippet_instance.settings.image_width }}"
+            loading="lazy"
+            width="{{ snippet_instance.settings.image_width }}"
+            height="{{ snippet_instance.settings.image_width | divided_by: snippet_instance.settings.the_image.aspect_ratio | ceil }}"          
+            alt="{{ snippet_instance.settings.title }}">
+        {% elsif snippet_instance.settings.svg_code != blank %}
+          {{ snippet_instance.settings.svg_code }}
+        {% endif %}
+
+        {% if snippet_instance.settings.image_click_url == blank %}
+          </div>
+        {% else %}
+          </a>
+        {% endif %}
+      {% endif %}
+    </div>
+  {% endif %}
+</div>

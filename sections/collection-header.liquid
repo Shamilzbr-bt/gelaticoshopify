@@ -1,0 +1,200 @@
+{% if section.settings.enable_collection_header %}
+  {% if collection.title != blank %}
+    {% capture collection_title %} <h1 class="page__header__title section__title-style">{{ collection.title }}</h1> {% endcapture %}
+  {% else %}
+    {% if template contains 'search' %}
+      {% capture collection_title %} <h1 class="page__header__title section__title-style">{{ 'general.search.title' | t }}</h1> {% endcapture %}
+    {% else %}
+      {% capture collection_title %} <h1 class="page__header__title section__title-style">{{ page_title }}</h1> {% endcapture %}
+    {% endif %}
+  {% endif %}
+
+  {% assign collection_header = section %}
+
+  {% if collection.image %}
+    {% assign header_image = collection.image %}
+  {% else %}
+    {% assign header_image = section.settings.default_bg_image %}
+  {% endif %}
+  
+  {% render 'page-header', snippet_instance: section, bg_image: header_image, the_title: collection_title, the_description: collection.description %}
+{% endif %}
+
+{% if section.settings.enable_collection_header == false and section.settings.breadcrumb %}
+  {% render 'breadcrumb' %}
+{% endif %}
+
+{% schema %}
+{
+  "name": "Collection Header",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Breadcrumbs"
+    },
+    {
+      "type": "checkbox",
+      "id": "breadcrumb",
+      "label": "Show Breadcrumb",
+      "default": true
+    },
+    {
+       "type": "radio",
+       "id": "breadcrumb_position",
+       "label": "Breadcrumb Position",
+       "options": [
+         { "value": "above", "label": "Above Title" },
+         { "value": "below", "label": "Below Title" }
+       ],
+       "default": "below"
+    },
+    {
+      "type": "header",
+      "content": "Header Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_collection_header",
+      "label": "Enable Collection Header",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Header Style"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_custom_styles",
+      "label": "Enable Custom Styles",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "height",
+      "min": 200,
+      "max": 600,
+      "step": 10,
+      "unit": "px",
+      "label": "Section Height",
+      "default": 250
+    },
+    {
+      "type": "range",
+      "id": "title_font_size",
+      "min": 12,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Title Font Size",
+      "default": 42
+    },
+    {
+      "type": "range",
+      "id": "heading_font_size",
+      "min": 12,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Description Font Size",
+      "default": 18
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title Color"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Description Color"
+    },
+    {
+      "type": "select",
+      "id": "alignment",
+      "label": "Text Alignment",
+      "default": "left",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "text_shadow",
+      "label": "Text shadow effect",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "soft",
+          "label": "Soft"
+        },
+        {
+          "value": "medium",
+          "label": "Medium"
+        },
+        {
+          "value": "intense",
+          "label": "Intense"
+        }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "header",
+      "content": "Background Style"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color"
+    },
+    {
+      "type": "image_picker",
+      "id": "default_bg_image",
+      "label": "Default Background Image",
+      "info": "Used if a collection doesn't have a featured image."
+    },
+    {
+      "type": "select",
+      "id": "background_image_style",
+      "label": "Background Image Style",
+      "default": "cover",
+      "options": [
+        {
+          "value": "cover",
+          "label": "Cover"
+        },
+        {
+          "value": "repeat",
+          "label": "Repeat"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "parallax",
+      "label": "Enable Parallax Effect",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "darken",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "label": "Darken Background",
+      "default": 0
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,187 @@
+{% render 'product-embed', snippet_instance: section, snippet_type: 'section' %}
+
+{% schema %}
+  {
+    "name": "Product Embed",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Note: you can include only one featured product on a page."
+      },
+      {
+        "type": "header",
+        "content": "General Settings"
+      },
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Section Title",
+        "default": "Featured Product"
+      },
+      {
+        "type": "select",
+        "id": "text_align",
+        "label": "Section Title Alignment",
+        "default": "center",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          },
+          {
+            "value": "center",
+            "label": "Center"
+          }
+        ]
+      },
+      {
+        "type": "product",
+        "id": "product_item",
+        "label": "Select Product"
+      },
+      {
+        "type": "select",
+        "id": "images_width",
+        "label": "Images Width (Desktop)",
+        "default": "50",
+        "options": [
+          {
+            "value": "30",
+            "label": "30%"
+          },
+          {
+            "value": "50",
+            "label": "50%"
+          },
+          {
+            "value": "60",
+            "label": "60%"
+          },
+          {
+            "value": "70",
+            "label": "70%"
+          }
+        ]
+      },
+      {
+        "type": "checkbox",
+        "id": "display_product_vendor",
+        "label": "Display Product Vendor",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "display_product_sku",
+        "label": "Display Product SKU",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "display_product_quantity",
+        "label": "Display Product Quantity Selector",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_dynamic_checkout_button",
+        "label": "Display Dynamic Checkout Button",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "display_share_buttons",
+        "label": "Display Share Buttons",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "Additional"
+      },
+      {
+        "type": "html",
+        "id": "html_below_title",
+        "label": "HTML code below Product Title",
+        "info": "You can insert any custom HTML code that will be located under the product title."
+      },
+      {
+        "type": "html",
+        "id": "html_below_buy",
+        "label": "HTML code below Buy Button",
+        "info": "You can insert any custom HTML code that will be located under buy button."
+      },
+      {
+        "type": "html",
+        "id": "html_below_card",
+        "label": "HTML code below Product Card",
+        "info": "You can insert any custom HTML code that will be located under the product card."
+      },
+      {
+        "type": "header",
+        "content": "Content Style"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_custom_styles",
+        "label": "Enable Custom Styles",
+        "default": true
+      },
+      {
+        "type": "color",
+        "id": "title_color",
+        "label": "Title Color"
+      },
+      {
+        "type": "range",
+        "id": "title_font_size",
+        "min": 12,
+        "max": 100,
+        "step": 1,
+        "unit": "px",
+        "label": "Section Title Font Size",
+        "default": 21
+      },
+      {
+        "type": "range",
+        "id": "spacing_top",
+        "min": 0,
+        "max": 200,
+        "step": 5,
+        "unit": "px",
+        "label": "Spacing: Top",
+        "default": 50
+      },
+      {
+        "type": "range",
+        "id": "spacing_bottom",
+        "min": 0,
+        "max": 200,
+        "step": 5,
+        "unit": "px",
+        "label": "Spacing: Bottom",
+        "default": 50
+      },
+      {
+        "type": "header",
+        "content": "Background Style"
+      },
+      {
+        "type": "color",
+        "id": "background_color",
+        "label": "Background Color"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Featured Product",
+        "category": "Products"
+      }
+    ]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+
+{% endjavascript %}

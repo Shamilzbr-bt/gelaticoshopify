@@ -1,0 +1,106 @@
+<div class="row columns text-{{- snippet_instance.settings.content_alignment -}}">
+  {% unless snippet_instance.settings.title == blank %}
+    <h3 class="section-title contact-form__title section__title-style">
+      {{ snippet_instance.settings.title | escape }}
+    </h3>
+  {% endunless %}
+  {% unless snippet_instance.settings.description == blank %}
+    <div class="contact-form__description section__text-style">
+      {{ snippet_instance.settings.description }}
+    </div>
+  {% endunless %}
+</div>
+<div class="row text-{{- snippet_instance.settings.content_alignment -}}">
+  <div class="medium-7 large-6 {% unless snippet_instance.settings.content_alignment == 'left' %}medium-centered large-centered{% endunless %} columns contact-form__wrap">
+    <div class="contact__form__inputs">
+
+      {% form 'contact' %}
+        {% if form.posted_successfully? %}
+          <p class="note form-success">
+            {{ 'contact.form.post_success' | t }}
+          </p>
+        {% endif %}
+        {{ form.errors | default_errors }}
+
+        {% for block in section.blocks %}
+
+          {% if block.settings.id != blank %}
+            {% assign field_id = block.settings.id | handleize %}
+          {% else %}
+            {% assign field_id = block.id | append: 'field' %}
+          {% endif %}
+
+          {% case block.type %}
+            {% comment %}
+              Email Field
+            {% endcomment %}
+            {% when 'email' %}
+              <label for="Email">{{ block.settings.title }}</label>
+              <input type="email" class="form__input" value="{% if customer %}{{ customer.email }}{% endif %}" placeholder="{{ block.settings.placeholder }}" name="contact[email]" id="Email" aria-label="{{ block.settings.title }}" autocapitalize="off" required>
+
+            {% comment %}
+              Text Field
+            {% endcomment %}
+            {% when 'field' %}
+              <label for="{{ field_id }}">{{ block.settings.title }}</label>
+              <input type="text" id="{{ field_id }}" class="input-full form__input" name="contact[{{ block.settings.title }}]" placeholder="{{ block.settings.placeholder }}" {% if block.settings.required %}required{% endif %} />
+
+            {% comment %}
+              Textarea
+            {% endcomment %}
+            {% when 'textarea' %}
+              <label for="{{ field_id }}">{{ block.settings.title }}</label>
+              <textarea rows="5" id="{{ field_id }}" class="input-full form__input" name="contact[{{ block.settings.title }}]" placeholder="{{ block.settings.placeholder }}" {% if block.settings.required %}required{% endif %}></textarea>
+
+            {% comment %}
+              Dropdown select
+            {% endcomment %}
+            {% when 'select' %}
+              {% assign select_inputs = block.settings.select_items | newline_to_br | split: "<br />" %}
+
+              <label>{{ block.settings.title }}</label>
+              <div class="dropdown-select-wrap">
+                <select id="{{ field_id }}" name="contact[{{ block.settings.name }}]">
+                  {% for select_item in select_inputs %}
+                    <option>{{ select_item }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+
+            {% comment %}
+              Checkbox
+            {% endcomment %}
+            {% when 'checkbox' %}
+              <div class="text-left checkbox-wrap">
+                {% if block.settings.label != blank %}
+                  <label>{{ block.settings.label }}</label>
+                {% endif %}
+                <input type="checkbox" id="{{ field_id }}" name="contact[{{ block.settings.title }}]" value="{{ block.settings.title }}" {% if block.settings.is_checked %}checked{% endif %} /> {{ block.settings.title }}
+              </div>
+
+            {% comment %}
+              Radio buttons
+            {% endcomment %}
+            {% when 'radio' %}
+              {% assign radio_inputs = block.settings.radio_items | newline_to_br | split: "<br />" %}
+
+              <label>{{ block.settings.title }}</label>
+
+              {% for input in radio_inputs %}
+                <div class="radio-wrap">
+                  <input type="radio" id="{{ field_id }}" name="contact[{{ block.settings.name }}]" value="{{ input }}" {% if forloop.first == true %}checked{% endif %} /> {{ input }}
+                  <br/>
+                </div>
+              {% endfor %}
+
+
+          {% endcase %}
+        {% endfor %}
+
+        {% render 'button-style', snippet_instance: snippet_instance, button_id: section.id, btn_bg_color: snippet_instance.settings.btn_bg_color, btn_style: snippet_instance.settings.btn_style, btn_text_color: snippet_instance.settings.btn_text_color %}
+        <input id="button-{{ section.id }}" type="submit" class="button {% if snippet_instance.settings.btn_style == 'hollow' %}hollow{% endif %}" value="{{ snippet_instance.settings.button_text }}">
+      {% endform %}
+
+    </div>
+  </div>
+</div>

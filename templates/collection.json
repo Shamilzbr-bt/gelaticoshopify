@@ -1,0 +1,11 @@
+{
+    "name": "Collection page",
+    "sections": {                
+        "collection-products": {
+            "type": "collection-products"
+        }
+    },
+    "order": [                
+        "collection-products"
+    ]
+}

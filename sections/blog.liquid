@@ -1,0 +1,63 @@
+{% paginate blog.articles by settings.blog_posts_count %}
+
+<div class="medium-8 large-8 columns blogroll">
+    {% for article in blog.articles %}
+
+      <div class="blog-article js-animate-appear-up">
+
+        <h2 class="article-title"><a href="{{ article.url }}">{{ article.title }}</a></h2>
+        <div class="article-meta">
+          {% capture date %}<span class="article-date"><i class="icon icon-calendar-alt"></i> <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">{{ article.published_at | date: format: 'month_day_year' }}</time></span>{% endcapture %}
+          {% capture author %}{{ article.author }}{% endcapture %}
+
+          {{ date }}
+          {% render 'tags-article' %}
+
+          {% if settings.blog_post_author %}
+            <span class="article-author"><i class="icon icon-user"></i> {{ author }}</span>
+          {% endif %}
+
+          {% if blog.comments_enabled? %}
+            <a class="comments-num" href="{{ article.url }}#comments">
+              <i class="icon icon-comment"></i>
+              {{ 'blogs.comments.with_count' | t: count: article.comments_count }}
+            </a>
+          {% endif %}
+
+        </div>
+
+        {% if article.image %}
+          <a class="article-featured-img" href="{{ article.url }}">
+            <img 
+              src="{{ article.image | img_url: '1024x' }}"
+              loading="lazy"
+              width="{{ article.image.width }}"              
+              height="{{ article.image.height }}"              
+              alt="{{ article.image.alt | escape }}">
+          </a>
+        {% endif %}
+
+        <div class="rte">
+          {% if article.excerpt.size > 0 %}
+            {{ article.excerpt }}
+          {% else %}
+            <p>{{ article.content | strip_html | truncatewords: 50 }}</p>
+          {% endif %}
+        </div>
+
+        <a class="read-more-btn" href="{{ article.url }}">{{ 'blogs.article.read_more' | t }} <span class="icon icon-angle-right"></span></a>
+      </div>
+
+      {% unless forloop.last %}<hr>{% endunless %}
+
+    {% endfor %}
+
+    {% if paginate.pages > 1 %}
+      <hr>
+      <div class="pagination">
+        {{ paginate | default_pagination | replace: '&laquo; Previous', '<span class="icon icon-angle-left"></span>' | replace: 'Next &raquo;', '<span class="icon icon-angle-right"></span>' }}
+      </div>
+    {% endif %}
+  </div>
+
+  {% endpaginate %}

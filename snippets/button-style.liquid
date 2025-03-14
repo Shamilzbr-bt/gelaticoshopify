@@ -1,0 +1,14 @@
+{% if snippet_instance.settings.enable_custom_styles or enable_button_style %}
+  <style>
+  #button-{{- button_id -}} {
+    {% if btn_bg_color != blank and btn_style != 'hollow' %}background-color: {{ btn_bg_color }};{% endif %}
+    {% if btn_bg_color != blank and btn_style == 'hollow' %}border-color: {{ btn_bg_color }};{% endif %}
+    {% if btn_text_color != blank %}color: {{ btn_text_color }};{% endif %}
+  }
+  #button-{{- button_id -}}:hover {
+    {% if btn_bg_color != blank and btn_style != 'hollow' %}background-color: {{ btn_bg_color | color_darken: 10 }};{% endif %}
+    {% if btn_bg_color != blank and btn_style == 'hollow' %}border-color: {{ btn_bg_color | color_darken: 10 }};{% endif %}
+    {% if btn_text_color != blank %}color: {{ btn_text_color | color_darken: 10 }};{% endif %}
+  }
+  </style>
+{% endif %}

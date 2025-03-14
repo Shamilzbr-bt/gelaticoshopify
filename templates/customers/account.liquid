@@ -1,0 +1,106 @@
+<!-- /templates/customers/account.liquid -->
+{% render 'breadcrumb' %}
+
+<div class="row account-page account-main-page">
+  <div class="columns">
+    <div class="row">
+      <div class="small-8 medium-9 large-9 columns">
+        <h1 class="page-title">{{ 'customer.account.title' | t }}</h1>
+      </div>
+      <div class="small-4 medium-3 large-3 columns text-right __log-out">
+        {{ 'layout.customer.log_out' | t | prepend: "<i class='icon icon-power-off'>&nbsp;</i>" | customer_logout_link }}
+      </div>
+    </div>
+    <hr>
+    <div class="row">
+
+      <div class="medium-8 large-8 columns">
+        <h2 class="customer-orders-title">{{ 'customer.orders.title' | t }}</h2>
+        
+        {% paginate customer.orders by 20 %}
+          {% if customer.orders.size != 0 %}
+
+            <table class="stack">
+              <thead>
+                <tr>
+                  <th>{{ 'customer.orders.order_number' | t }}</th>
+                  <th>{{ 'customer.orders.date' | t }}</th>
+                  <th>{{ 'customer.orders.payment_status' | t }}</th>
+                  <th>{{ 'customer.orders.fulfillment_status' | t }}</th>
+                  <th>{{ 'customer.orders.total' | t }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for order in customer.orders %}
+                  <tr>
+                    <td class="__order-num"><span class="show-for-small-only">{{ 'customer.orders.order_number' | t }}:</span> {{ order.name | link_to: order.customer_url }}</td>
+                    <td><span class="show-for-small-only">{{ 'customer.orders.date' | t }}:</span> {{ order.created_at | date: format: 'month_day_year' }}</td>
+                    <td><span class="show-for-small-only">{{ 'customer.orders.payment_status' | t }}:</span> {{ order.financial_status_label }}</td>
+                    <td><span class="show-for-small-only">{{ 'customer.orders.fulfillment_status' | t }}:</span> {{ order.fulfillment_status_label }}</td>
+                    <td><span class="show-for-small-only">{{ 'customer.orders.total' | t }}:</span> {{ order.total_price | money_with_currency }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+
+          {% else %}
+
+            <p>{{ 'customer.orders.none' | t }}</p>
+
+          {% endif %}
+          {% if paginate.pages > 1 %}
+            <hr>
+            <div class="pagination">
+              {{ paginate | default_pagination | replace: '&laquo; Previous', '&larr;' | replace: 'Next &raquo;', '&rarr;' }}
+            </div>
+          {% endif %}
+        {% endpaginate %}
+      </div>
+
+      <div class="medium-4 large-4 columns customer-details">
+        <h2 class="customer-details-title">{{ 'customer.account.details' | t }}</h2>
+
+        <div class="callout">
+
+          <h3 class="customer-name-title">{{ customer.name }}</h3>
+
+          {% if customer.default_address != nil %}
+            <p class="customer-address">
+            {% if customer.default_address.address1 != "" %}
+              {{ customer.default_address.address1 }}<br>
+            {% endif %}
+
+            {% if customer.default_address.address2 != "" %}
+              {{ customer.default_address.address2 }}<br>
+            {% endif %}
+
+            {% if customer.default_address.city != "" %}
+              {{ customer.default_address.city }}<br>
+            {% endif %}
+
+            {% if customer.default_address.province_code != "" %}
+              {{ customer.default_address.province_code | upcase }}<br>
+            {% endif %}
+
+            {% if customer.default_address.zip != "" %}
+              {{ customer.default_address.zip | upcase }}<br>
+            {% endif %}
+
+            {% if customer.default_address.country != "" %}
+              {{ customer.default_address.country }}<br>
+            {% endif %}
+
+            {% if customer.default_address.phone != "" %}
+              {{ customer.default_address.phone }}
+            {% endif %}
+            </p>
+
+          {% endif %}
+
+          <p><a href="/account/addresses">{{ 'customer.account.view_addresses' | t }} ({{ customer.addresses_count }})</a></p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

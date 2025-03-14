@@ -1,0 +1,131 @@
+{%- render 'section-helper', snippet_instance: section, snippet_type: 'section', snippet_name: 'recent-posts', section_class: 'recent-posts-section', section_type: 'recent-posts' -%}
+
+{% schema %}
+  {
+    "name": "Blog: Recent Posts",
+    "settings": [
+      {
+        "type": "header",
+        "content": "General Settings"
+      },
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Section Title",
+        "default": "Latest News"
+      },
+      {
+        "type": "select",
+        "id": "title_alignment",
+        "label": "Section Title Alignment",
+        "default": "center",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          },
+          {
+            "value": "center",
+            "label": "Center"
+          }
+        ]
+      },
+      {
+         "type": "blog",
+         "id": "blog_name",
+         "label": "Blog"
+      },
+      {
+        "type": "select",
+        "id": "total",
+        "label": "Number of posts to display",
+        "default": "3",
+        "options": [
+          {
+            "value": "3",
+            "label": "3"
+          },
+          {
+            "value": "6",
+            "label": "6"
+          },
+          {
+            "value": "9",
+            "label": "9"
+          }
+        ]
+      },
+      {
+        "type": "header",
+        "content": "Content Style"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_custom_styles",
+        "label": "Enable Custom Styles",
+        "default": true
+      },
+      {
+        "type": "color",
+        "id": "title_color",
+        "label": "Section Title Color"
+      },
+      {
+        "type": "color",
+        "id": "text_color",
+        "label": "Text Color"
+      },
+      {
+        "type": "range",
+        "id": "title_font_size",
+        "min": 12,
+        "max": 100,
+        "step": 1,
+        "unit": "px",
+        "label": "Section Title Size",
+        "default": 21
+      },
+      {
+        "type": "range",
+        "id": "spacing_top",
+        "min": 0,
+        "max": 200,
+        "step": 5,
+        "unit": "px",
+        "label": "Spacing: Top",
+        "default": 55
+      },
+      {
+        "type": "range",
+        "id": "spacing_bottom",
+        "min": 0,
+        "max": 200,
+        "step": 5,
+        "unit": "px",
+        "label": "Spacing: Bottom",
+        "default": 0
+      },
+      {
+        "type": "header",
+        "content": "Background Style"
+      },
+      {
+        "type": "color",
+        "id": "background_color",
+        "label": "Background Color"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Blog: Recent Posts",
+        "category": "Blog"
+      }
+    ]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

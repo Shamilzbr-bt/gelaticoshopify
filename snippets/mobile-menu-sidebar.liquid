@@ -1,0 +1,76 @@
+<drawer-sidebar data-sidebar="mobileMenuSidebar" drawer-position="left">
+  <div class="off-canvas position-left" id="mobileMenuSidebar" data-transition="overlap">
+    <div class="mobile-sidebar-title">{{ 'layout.drawers.browse' | t }}</div>
+
+    <mobile-menu>
+      <ul class="vertical menu accordion-menu mobile-menu">
+        {% if settings.show_mobile_sidebar_search %}
+          <li class="mobile-menu__item mobile-search">
+            {% render 'search-bar' %}
+          </li>
+        {% endif %}
+
+        {% assign mobile_menu_id = settings.mobile_menu %}
+
+        {% if mobile_menu_id != blank %}
+          {% for link in linklists[mobile_menu_id].links %}
+            {% assign child_list_handle = link.title | handleize %}
+            {% if linklists[child_list_handle].links != blank %}
+              <li class="mobile-menu__item mobile-menu__item--parent {% if link.active %} __active{% endif %}">
+                <a href="{{ link.url }}">{{ link.title }}</a>
+                <ul class="menu mobile-submenu vertical nested">
+                  {% for childlink in linklists[child_list_handle].links %}
+                    {% assign grand_child_list_handle = childlink.title | handleize %}
+
+                    {% if linklists[grand_child_list_handle].links != blank %}
+                      <li class="mobile-menu__sub-item mobile-menu__item--parent {% if link.active %} __active{% endif %} has-grandchild">
+                        <a href="{{ childlink.url }}">{{ childlink.title | escape }}</a>
+                        <ul class="menu mobile-submenu vertical nested">
+                          {% for grand_childlink in linklists[grand_child_list_handle].links %}
+                            <li class="mobile-menu__sub-item {% if link.active %} __active{% endif %}">
+                              <a href="{{ grand_childlink.url }}">{{ grand_childlink.title | escape }}</a>
+                            </li>
+                          {% endfor %}
+                        </ul>
+                      </li>
+                    {% else %}
+                      <li class="mobile-menu__sub-item {% if link.active %} __active{% endif %}">
+                        <a href="{{ childlink.url }}">{{ childlink.title | escape }}</a>
+                      </li>
+                    {% endif %}
+                  {% endfor %}
+                </ul>
+              </li>
+            {% else %}
+              <li class="mobile-menu__item {% if link.active %} __active{% endif %}">
+                <a href="{{ link.url }}">{{ link.title }}</a>
+              </li>
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+
+        {% if shop.customer_accounts_enabled and settings.account_link %}
+          {% if customer %}
+            <li class="mobile-menu__item"><a href="/account">{{ 'layout.customer.account' | t }}</a></li>
+            <li class="mobile-menu__item">{{ 'layout.customer.log_out' | t | customer_logout_link }}</li>
+          {% else %}
+            <li class="mobile-menu__item"><a href="/account/login" id="customer_login_link_mobile">{{ 'layout.customer.log_in' | t }}</a></li>
+            <li class="mobile-menu__item"><a href="/account/register" id="customer_register_link_mobile">{{ 'layout.customer.create_account' | t }} </a></li>
+          {% endif %}
+        {% endif %}
+
+        {% if settings.enable_currency_switch %}
+          <li class="mobile-menu__item mobile-currency-switch-wrap">
+            {% render 'currency-switch', snippet_usage: 'mobile' %}
+          </li>
+        {% endif %}
+      </ul>
+    </mobile-menu>
+
+    {% if settings.show_mobile_sidebar_social %}
+      <div class="mobile-social">
+        {% render 'social-media-links' %}
+      </div>
+    {% endif %}
+  </div>
+</drawer-sidebar>

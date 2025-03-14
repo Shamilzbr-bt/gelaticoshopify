@@ -1,0 +1,127 @@
+{% liquid
+  if the_product == blank
+    assign the_product = product
+  endif
+
+  unless grid_item_width
+    assign grid_item_width = 'small-12 medium-3 large-3 columns'
+  endunless
+
+  assign on_sale = false
+  if the_product.compare_at_price > the_product.price
+    assign on_sale = true
+    assign discount_percentage = the_product.compare_at_price | minus: the_product.price | times: 100 | divided_by: the_product.compare_at_price
+  endif %}
+
+{% assign sold_out = true %}
+{% if the_product.available %}
+  {% assign sold_out = false %}
+{% endif %}
+
+<div class="{{ grid_item_width }} product-loop-item {% if settings.enable_quick_add_to_cart_desktop %}quick-add-to-cart-desktop{% endif %}">
+  {% if settings.show_product_badges %}
+    {% if sold_out %}
+      <div class="product-badge badge__sold-out">{{ 'products.product.out_of_stock' | t }}</div>
+    {% endif %}
+
+    {% if on_sale and sold_out == false and discount_percentage > 0 %}
+      <div class="product-badge badge__sale">{{ 'products.product.save' | t: discount: discount_percentage }} </div>
+    {% endif %}
+  {% endif %}
+
+  <a href="{{ the_product.url | within: collection }}" class="product-loop-image {% if settings.display_secondary_image %}secondary-image-enabled{% endif %}">    
+    {% unless the_product.featured_media == blank %}
+      {%- assign preview_image = the_product.featured_media.preview_image -%}
+      {% if settings.display_secondary_image %}
+        {%- assign secondary_img = the_product.media[1] -%}
+      {% endif %}
+
+      <img class="product-image_featured {% unless secondary_img == blank %} product-image_secondary-enabled {% endunless %}" 
+        srcset="{% if preview_image.width >= 288 %}{{ preview_image | img_url: '288x' }} 288w,{% endif %}
+        {% if preview_image.width >= 576 %}{{ preview_image | img_url: '576x' }} 576w,{% endif %}
+        {% if preview_image.width >= 750 %}{{ preview_image | img_url: '750x' }} 750w,{% endif %}"        
+        src="{{ preview_image | img_url: '750px' }}"
+        sizes="(min-width: 1200px) {{ 1200 | minus: 100 | times: 0.64 | round }}px, (min-width: 750px) calc((100vw - 11.5rem) / 2), calc(100vw - 4rem)"
+        loading="lazy"
+        width="500"
+        height="{{ 500 | divided_by: preview_image.aspect_ratio | ceil }}"
+        alt="{{ preview_image.alt | escape }}">
+
+      {% if settings.display_secondary_image %}
+        {% unless secondary_img == blank %}          
+          <img class="product-image_secondary" 
+            srcset="{% if secondary_img.width >= 288 %}{{ secondary_img | img_url: '288x' }} 288w,{% endif %}
+            {% if secondary_img.width >= 576 %}{{ secondary_img | img_url: '576x' }} 576w,{% endif %}
+            {% if secondary_img.width >= 750 %}{{ secondary_img | img_url: '750x' }} 750w,{% endif %}"        
+            src="{{ secondary_img | img_url: '750px' }}"
+            sizes="(min-width: 1200px) {{ 1200 | minus: 100 | times: 0.64 | round }}px, (min-width: 750px) calc((100vw - 11.5rem) / 2), calc(100vw - 4rem)"
+            loading="lazy"
+            width="500"
+            height="{{ 500 | divided_by: secondary_img.aspect_ratio | ceil }}"
+            alt="{{ secondary_img.alt | escape }}">
+        {% endunless %}
+      {% endif %}
+
+      {% if settings.enable_quick_add_to_cart_desktop and sold_out == false %}
+        <div class="product-item__action">
+          {% if the_product.variants.size > 1 %}
+            <input type="submit" onclick="location.href='{{ the_product.url | within: collection }}';"  value="{{ settings.see_buying_options_button_text }}" class="button quick-add-to-cart-btn" />
+          {% else %}
+            <form method="post" action="/cart/add">
+              <input type="hidden" name="id" value="{{ the_product.variants.first.id }}" />
+              <input type="submit" value="{{ 'products.product.add_to_cart' | t }}" class="button addToCartButton quick-add-to-cart-btn" />
+            </form>
+          {% endif %}
+        </div>
+      {% endif %}
+
+    {% endunless %}
+  </a>
+
+  <a class="section__text-style product-loop-title" href="{{ the_product.url | within: collection }}">{{ the_product.title }}</a>
+  <a class="section__text-style product-loop-price" href="{{ the_product.url | within: collection }}">
+    {% if on_sale %}
+      <span class="visually-hidden">{{ 'products.general.regular_price' | t }}</span>
+      <s><span class="money">{{ the_product.compare_at_price | money }}</span></s>
+      {% if the_product.price_varies %}
+        {% assign sale_price = the_product.price | money | prepend: '<span class="money">' | append: '</span>' %}
+        {{ 'products.product.on_sale_from_html' | t: price: sale_price }}
+      {% else %}
+        <span class="money">{{ the_product.price | money }}</span>
+      {% endif %}
+    {% else %}
+      {% if the_product.price_varies %}
+        {% assign price = the_product.price | money | prepend: '<span class="money">' | append: '</span>' %}
+        {{ 'products.general.from_text_html' | t: price: price }}
+      {% else %}
+        <span class="money">{{ the_product.price | money }}</span>
+      {% endif %}
+    {% endif %}
+    {% if sold_out %}
+      <span class="is-sold-out">{{ 'products.product.sold_out' | t }}</span>
+    {% endif %}
+  </a>
+
+  {% if settings.add_spr_markup %}
+   <div class="spr-badge__wrap">
+      <a href="{{ the_product.url | within: collection }}#shopify-product-reviews">
+        <span class="shopify-product-reviews-badge" data-id="{{ the_product.id }}"></span>
+      </a>
+    </div>
+  {% endif %}
+
+  {% if settings.enable_quick_add_to_cart_mobile and sold_out == false %}
+    <div class="product-item__action_mobile">
+      {% if the_product.variants.size > 1 %}
+        <input type="submit" onclick="location.href='{{ the_product.url | within: collection }}';"  value="{{ settings.see_buying_options_button_text }}" class="quick-add-to-cart-btn button small" />
+      {% else %}
+        <form method="post" action="/cart/add">
+          <input type="hidden" name="id" value="{{ the_product.variants.first.id }}" />
+          <input type="submit" value="{{ 'products.product.add_to_cart' | t }}" class="button small quick-add-to-cart-btn addToCartButton" />
+        </form>
+      {% endif %}
+    </div>
+  {% endif %}
+</div>
+
+{% assign the_product = '' %}

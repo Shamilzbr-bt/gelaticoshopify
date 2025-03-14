@@ -1,0 +1,68 @@
+{% if settings.display_collection_sorting %}
+  <div class="sort-form">
+    <label for="SortBy">{{ 'collections.sorting.title' | t }}</label>
+    <select name="SortBy" id="SortBy">
+      <option value="manual">{{ 'collections.sorting.featured' | t }}</option>
+      <option value="best-selling">{{ 'collections.sorting.best_selling' | t }}</option>
+      <option value="title-ascending">{{ 'collections.sorting.az' | t }}</option>
+      <option value="title-descending">{{ 'collections.sorting.za' | t }}</option>
+      <option value="price-ascending">{{ 'collections.sorting.price_ascending' | t }}</option>
+      <option value="price-descending">{{ 'collections.sorting.price_descending' | t }}</option>
+      <option value="created-descending">{{ 'collections.sorting.date_descending' | t }}</option>
+      <option value="created-ascending">{{ 'collections.sorting.date_ascending' | t }}</option>
+    </select>
+  </div>
+
+  <script>
+    /*============================================================================
+      Inline JS because collection liquid object is only available
+      on collection pages and not external JS files
+    ==============================================================================*/
+    Shopify.queryParams = {};
+    if (location.search.length) {
+      for (var aKeyValue, i = 0, aCouples = location.search.substr(1).split('&'); i < aCouples.length; i++) {
+        aKeyValue = aCouples[i].split('=');
+        if (aKeyValue.length > 1) {
+          Shopify.queryParams[decodeURIComponent(aKeyValue[0])] = decodeURIComponent(aKeyValue[1]);
+        }
+      }
+    }
+
+    var sortSelector = document.querySelector('#SortBy');      
+    sortSelector.value = '{{ collection.sort_by | default: collection.default_sort_by }}';
+    sortSelector.addEventListener('change', (evt) => {
+      Shopify.queryParams.sort_by = evt.target.value;      
+      location.search = '?sort_by=' + evt.target.value;      
+    });
+  
+  </script>
+{% endif %}
+
+{% if settings.display_collection_view_switch %}
+  <div class="collection-view">
+    <button type="button" title="{{ 'collections.general.grid_view' | t }}" class="change-view{% unless template contains 'list' %} change-view--active{% endunless %}" data-view="grid">
+      <span class="">
+        <span class="icon icon-th"></span>
+        <span class="fallback-text">{{ 'collections.general.grid_view' | t }}</span>
+      </span>
+    </button>
+    <button type="button" title="{{ 'collections.general.list_view' | t }}" class="change-view{% if template contains 'list' %} change-view--active{% endif %}" data-view="list">
+      <span class="">
+        <span class="icon icon-list-ul"></span>
+        <span class="fallback-text">{{ 'collections.general.list_view' | t }}</span>
+      </span>
+    </button>
+  </div>
+  <script>
+    document.querySelectorAll('.collection-view > button').forEach(el => {
+      el.addEventListener('click', evt => {
+        var btn =  evt.target.closest('.change-view');
+        var view = btn.getAttribute('data-view');    
+        document.querySelector('.collection-view .change-view--active').classList.remove('change-view--active');          
+        btn.classList.add('change-view--active');
+        location.search = '?view=' + view;
+      });      
+    });
+
+  </script>
+{% endif %}

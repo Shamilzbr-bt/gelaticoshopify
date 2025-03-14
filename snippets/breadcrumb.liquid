@@ -1,0 +1,82 @@
+{% unless template == 'index' %}
+<div class="breadcrumb-wrapper js-animate-appear-show">
+  <div class="row">
+    <nav class="columns breadcrumb" role="navigation" aria-label="breadcrumbs">
+      <a href="/" title="{{ 'general.breadcrumbs.home_link_title' | t }}">{{ 'general.breadcrumbs.home' | t }}</a>
+
+      {% if template contains 'product' %}
+
+        {% if collection %}
+          <span class="icon icon-angle-right"></span>
+          {% if collection.handle %}
+            {% capture url %}/collections/{{ collection.handle }}{% endcapture %}
+            {{ collection.title | link_to: url }}
+          {% endif %}
+        {% endif %}
+        <span class="icon icon-angle-right"></span>
+        <span>{{ product.title }}</span>
+
+      {% elsif template contains 'collection' and collection.handle %}
+
+        <span class="icon icon-angle-right"></span>
+        {% if current_tags %}
+          {% capture url %}/collections/{{ collection.handle }}{% endcapture %}
+          {{ collection.title | link_to: url }}
+          <span class="icon icon-angle-right"></span>
+          <span>{{ current_tags | join: " + " | capitalize }}</span>
+        {% else %}
+          <span>{{ collection.title }}</span>
+        {% endif %}
+
+      {% elsif template == 'blog' %}
+
+        <span class="icon icon-angle-right"></span>
+        {% if current_tags %}
+          {{ blog.title | link_to: blog.url }}
+          <span class="icon icon-angle-right"></span>
+          <span>{{ current_tags | join: " + " | capitalize }}</span>
+        {% else %}
+        <span>{{ blog.title }}</span>
+        {% endif %}
+
+      {% elsif template == 'article' %}
+
+        <span class="icon icon-angle-right"></span>
+        {{ blog.title | link_to: blog.url }}
+        <span class="icon icon-angle-right"></span>
+        <span>{{ article.title }}</span>
+
+      {% elsif template contains 'page' %}
+
+       <span class="icon icon-angle-right"></span>
+       <span>{{ page.title }}</span>
+
+      {% elsif template contains 'search' %}
+
+        <span class="icon icon-angle-right"></span>
+        {% if search.performed %}
+          <span>{{ 'general.search.results_for_html' | t: terms: search.terms }}</span>
+        {% else %}
+          <span>{{ 'general.search.submit' | t }}</span>
+        {% endif %}
+
+      {% elsif template contains 'cart' %}
+        <span class="icon icon-angle-right"></span>
+        <span>{{ 'cart.general.title' | t }}</span>
+
+      {% elsif template contains 'customers/addresses' or template contains 'customers/order' %}
+        <span class="icon icon-angle-right"></span>
+        <a href="/account">{{ 'layout.customer.account' | t }}</a>
+        <span class="icon icon-angle-right"></span>
+        <span>{{ page_title }}</span>
+
+      {% else %}
+
+       <span class="icon icon-angle-right"></span>
+       <span>{{ page_title | strip_html }}</span>
+
+      {% endif %}
+    </nav>
+  </div>
+</div>
+{% endunless %}

@@ -1,0 +1,215 @@
+{%- capture section_id -%} section-{{-section.id-}} {%- endcapture -%}
+
+{% if section.settings.enable_custom_styles %}
+  {% render 'section-styles', section_id: section_id, instance_settings: section.settings %}
+{% endif %}
+
+<div id="{{ section_id }}" class="section">
+  <div data-section-id="{{ section.id }}" data-section-type="brands-list"
+    class="content-section brands-section">
+    {% unless section.settings.title == blank %}
+      <div class="row columns text-{{section.settings.title_alignment }}">
+        <h2 class="section-title section__title-style">{{ section.settings.title }}</h2>
+      </div>
+    {% endunless %}
+
+    {% liquid 
+      case section.settings.row_width
+        when '4'
+          assign grid_settings = 'row small-up-2 medium-up-4 large-up-4'
+        when '5'
+          assign grid_settings = 'row small-up-2 medium-up-5 large-up-5'
+        when '6'
+          assign grid_settings = 'row small-up-3 medium-up-6 large-up-6'
+        when '7'
+          assign grid_settings = 'row small-up-4 medium-up-7 large-up-7'
+        when '8'
+          assign grid_settings = 'row small-up-4 medium-up-8 large-up-8'
+      endcase %}
+
+    <div class="{{ grid_settings }} brands__grid {% if section.settings.grayscale_filter %}brand__logo_grayscale{% endif %} {% if section.settings.align_horizontally %}brand__logo_align{% endif %}">
+      {% for block in section.blocks %}
+        {% unless block.settings.logo == blank %}
+          <div class="column brand__logo">
+            {% unless block.settings.brand_url == blank %}
+              <a class="brand__link" href="{{ block.settings.brand_url }}" rel="nofollow" target="_blank">
+            {% endunless %}
+                <img 
+                  src="{{ block.settings.logo | img_url: 'large' }}" 
+                  loading="lazy"
+                  width="400"
+                  height="{{ 400 | divided_by: block.settings.logo.aspect_ratio | ceil }}"
+                  alt="{{ block.settings.logo_title }}"                  
+                >
+            {% unless block.settings.brand_url == blank %}
+              </a>
+            {% endunless %}
+          </div>
+        {% endunless %}
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+  {
+    "name": "Brands Logos",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Content Settings"
+      },
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Section Title",
+        "default": "Brands"
+      },
+      {
+        "type": "select",
+        "id": "title_alignment",
+        "label": "Section Title Alignment",
+        "default": "center",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          },
+          {
+            "value": "center",
+            "label": "Center"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "id": "row_width",
+        "label": "Items in a row (Desktop)",
+        "default": "6",
+        "options": [
+          {
+            "value": "4",
+            "label": "4"
+          },
+          {
+            "value": "5",
+            "label": "5"
+          },
+          {
+            "value": "6",
+            "label": "6"
+          },
+          {
+            "value": "7",
+            "label": "7"
+          },
+          {
+            "value": "8",
+            "label": "8"
+          }
+        ]
+      },
+      {
+        "type": "checkbox",
+        "id": "grayscale_filter",
+        "label": "Use greyscale filter",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "align_horizontally",
+        "label": "Align Logos Horizontally",
+        "default": false
+      },
+      {
+        "type": "header",
+        "content": "Content Style"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_custom_styles",
+        "label": "Enable Custom Styles",
+        "default": true
+      },
+      {
+        "type": "color",
+        "id": "title_color",
+        "label": "Title Color"
+      },
+      {
+        "type": "range",
+        "id": "title_font_size",
+        "min": 12,
+        "max": 100,
+        "step": 1,
+        "unit": "px",
+        "label": "Title Font Size",
+        "default": 21
+      },
+      {
+        "type": "range",
+        "id": "spacing_top",
+        "min": 0,
+        "max": 200,
+        "step": 5,
+        "unit": "px",
+        "label": "Spacing: Top",
+        "default": 55
+      },
+      {
+        "type": "range",
+        "id": "spacing_bottom",
+        "min": 0,
+        "max": 200,
+        "step": 5,
+        "unit": "px",
+        "label": "Spacing: Bottom",
+        "default": 30
+      },
+      {
+        "type": "header",
+        "content": "Background Style"
+      },
+      {
+        "type": "color",
+        "id": "background_color",
+        "label": "Background Color"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "brand_logo",
+        "name": "Brand Logo",
+        "settings": [
+          {
+            "type": "image_picker",
+            "id": "logo",
+            "label": "Logo Image"
+          },
+          {
+            "type": "text",
+            "id": "logo_title",
+            "label": "Title"
+          },
+          {
+            "type": "url",
+            "id": "brand_url",
+            "label": "Link"
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Brands Logos",
+        "category": "Content"
+      }
+    ]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

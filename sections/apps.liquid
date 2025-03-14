@@ -1,0 +1,31 @@
+<div class="{% if section.settings.include_margins %}row columns{% endif %}">
+  {%- for block in section.blocks -%}
+    {% render block %}
+  {%- endfor -%}
+</div>
+
+  {% schema %}
+  {
+    "name": "Apps",
+    "tag": "section",
+    "class": "spaced-section",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "include_margins",
+        "default": true,
+        "label": "Include margins"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "@app"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Apps"
+      }
+    ]
+  }
+  {% endschema %}

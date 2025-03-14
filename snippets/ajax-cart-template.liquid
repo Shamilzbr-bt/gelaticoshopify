@@ -1,0 +1,175 @@
+<script>
+class QuantitySelector extends HTMLElement {
+  constructor() {
+    super();
+
+    this.data = {
+      key: this.getAttribute('key') || '',
+      line: this.getAttribute('line') || '',
+      itemQty: this.getAttribute('itemQty') || 1,
+      inputName: this.getAttribute('quantity') || 'quantity'        
+    }
+
+    this.innerHTML = JSQuantitySelector(this.data);
+    this.numInput = this.querySelector('.js-qty__num');
+
+    this.querySelector('.js-qty__adjust--minus').addEventListener('click', this.minus.bind(this));
+    this.querySelector('.js-qty__adjust--plus').addEventListener('click', this.plus.bind(this));
+  }
+
+  minus() {
+    var val = this.numInput.value;
+    val = validateQty(val);
+
+    if(val > 0) {
+      this.numInput.value = parseInt(val) - 1;
+      this.numInput.dispatchEvent(new Event('change'));
+    }
+  }
+
+  plus() {
+    var val = this.numInput.value;
+    val = validateQty(val);
+  
+    this.numInput.value = parseInt(val) + 1;
+    this.numInput.dispatchEvent(new Event('change'));
+  }
+}
+
+customElements.define('quantity-selector', QuantitySelector);
+
+
+function validateQty(qty) {
+  if ((parseFloat(qty) == parseInt(qty)) && !isNaN(qty)) {
+    // We have a valid number!
+  } else {      
+    qty = 1;
+  }
+  return qty;
+};
+
+function JSCart(data) {
+  var cartNotesHtml = '';
+  {% if settings.cart_notes_enable %}
+    var noteLabel = `{{ 'cart.general.note' | t }}`;
+    var noteText = data.note ? data.note : '';
+    cartNotesHtml += `
+      <div class="row columns">
+        <label for="CartSpecialInstructions">${noteLabel}</label>
+        <textarea name="note" class="input-full" id="CartSpecialInstructions">${noteText}</textarea>
+      </div>`;
+  {% endif %}  
+
+  var subtotalLabel = "{{ 'cart.general.subtotal' | t }}";
+  var totalDiscount = data.totalCartDiscount ? `<p class="ajaxcart__savings text-center"><em>${data.totalCartDiscount}</em></p>` : ``;
+  var shippingText = "{{ 'cart.general.shipping_at_checkout' | t }}";
+
+  var currencyText = "";
+  {% if settings.enable_currency_switch %}
+    currencyText = "{{ 'cart.general.order_currency' | t: shop_currency: shop.currency }}";
+  {% endif %}   
+
+  var checkoutLabel = "{{ 'cart.general.checkout' | t }}";
+
+  var dynamicCheckout = "";
+  {% if additional_checkout_buttons %}
+    dynamicCheckout = '<div class="row columns additional_checkout_buttons">{{ content_for_additional_checkout_buttons }}</div>';
+  {% endif %}
+
+  return `<form action="/cart" method="post" novalidate class="cart ajaxcart">
+            <div class="ajaxcart__inner">
+              ${JSCartItems(data.items)}
+              ${cartNotesHtml}
+            </div>
+            <div class="ajaxcart__footer">
+              <div class="row cart__subtotal">
+                <div class="small-6 medium-6 large-6 columns">
+                  <p>${subtotalLabel}</p>
+                </div>
+                <div class="small-6 medium-6 large-6 columns text-right cart__subtotal-price">
+                  <p><span class="money">${data.totalPrice}</span></p>
+                </div>
+              </div>
+              <div class="row columns">
+                ${totalDiscount}
+              </div>
+              <p class="row columns text-center cart__shipping-text">
+                ${shippingText}
+                ${currencyText}
+              </p>
+              <div class="row columns text-center">
+                <button type="submit" class="button cart__checkout" name="checkout">
+                  ${checkoutLabel}
+                </button>
+              </div>
+              ${dynamicCheckout}
+            </div>
+          </form>`;
+}
+
+function JSQuantitySelector(data) {
+  return `<div class="js-qty" data-id="${data.key}">
+            <button type="button" class="js-qty__adjust js-qty__adjust--minus __minus" ><span>&minus;</span></button>
+            <input type="text" class="js-qty__num" value="${data.itemQty}" min="1" data-id="${data.key}" data-line="${data.line}" aria-label="quantity" pattern="[0-9]*" name="${data.inputName}">
+            <button type="button" class="js-qty__adjust js-qty__adjust--plus __plus"><span>&#43;</span></button>
+          </div>`;
+}
+
+function JSCartItems(items) {
+  var itemsHtml = '';
+  items.forEach(item => {
+    itemsHtml += JSCartLineItem(item);
+  });
+  return itemsHtml;  
+}
+
+function JSCartLineItem(data) { 
+  var quantitySelector = `<quantity-selector key="${data.key}" line="${data.line}" itemQty="${data.itemQty}" name="updates[]"></quantity-selector>`;
+  var priceHtml = '';
+  if(data.discountsApplied) {
+    priceHtml += `<small class="ajaxcart-item__price-strikethrough"><s><span class="money">${data.originalLinePrice}</span></s></small>
+      <br><span class="money">${data.linePrice}</span>`;
+  } else {
+    priceHtml += `<span class="money">${data.linePrice}</span>`;
+  }
+
+  var discountsHtml = '';
+  if(data.discountsApplied) {
+    discountsHtml += `<div class="row"><div class="columns text-right">`;
+    data.discounts.forEach(discount => {
+      discountsHtml += `<small class="ajaxcart-item__discount">${discount.title}</small><br>`;
+    });
+    discountsHtml += `</div></div>`;
+  }
+
+  var variation = data.variation ? `<span class="ajaxcart__product-meta">${data.variation}</span>` : '';
+  var vendor = data.vendor ? `<span class="ajaxcart__product-meta">${data.vendor}</span>` : '';
+
+  return `<div class="ajaxcart__product">
+            <div class="ajaxcart__row" data-line="${data.line}">
+              <div class="row">
+                <div class="small-4 medium-4 large-4 columns ajaxcart__product-img">
+                  <a href="${data.url}" class="ajaxcart__product-image"><img src="${data.img}" alt="${data.name}"></a>
+                </div>
+                <div class="small-8 medium-8 large-8 columns cart__product__info">
+                  <p>
+                    <a href="${data.url}" class="ajaxcart__product-name">${data.name}</a>            
+                    ${variation}
+                    ${vendor}
+                  </p>
+          
+                  <div class="row">
+                    <div class="small-6 medium-6 large-6 columns cart__product__quantity">
+                      ${quantitySelector}
+                    </div>
+                    <div class="small-6 medium-6 large-6 columns cart__product__price">
+                      ${priceHtml}
+                    </div>
+                  </div>
+                  ${discountsHtml}                    
+                </div>
+              </div>
+            </div>
+          </div>`;
+  }
+</script>

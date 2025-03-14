@@ -1,0 +1,48 @@
+<div class="row columns js-animate-appear-show text-{{- snippet_instance.settings.content_alignment -}}">
+  {% unless snippet_instance.settings.title == blank %}
+    <h3 class="section-title contact-form__title section__title-style">
+      {{ snippet_instance.settings.title | escape }}
+    </h3>
+  {% endunless %}
+  {% unless snippet_instance.settings.description == blank %}
+    <div class="contact-form__description section__text-style">
+      {{ snippet_instance.settings.description }}
+    </div>
+  {% endunless %}
+</div>
+<div class="row js-animate-appear-show text-{{- snippet_instance.settings.content_alignment -}}">
+  <div class="medium-7 large-6 {% unless snippet_instance.settings.content_alignment == 'left' %}medium-centered large-centered{% endunless %} columns contact-form__wrap">
+    <div class="contact__form__inputs">
+      {% form 'contact' %}
+        {% if form.posted_successfully? %}
+          <p class="note form-success">
+            {{ 'contact.form.post_success' | t }}
+          </p>
+        {% endif %}
+        {{ form.errors | default_errors }}
+        <div class="row">
+          <div class="medium-6 large-6 columns">
+            {% assign name_attr = 'contact.form.name' | t | handle %}
+            <label for="ContactFormName">{{ 'contact.form.name' | t }}</label>
+            <input type="text" id="ContactFormName" class="input-full form__input" name="contact[{{ name_attr }}]" placeholder="{{ 'contact.form.name' | t }}" autocapitalize="words" value="{% if form[name_attr] %}{{ form[name_attr] }}{% elsif customer %}{{ customer.name }}{% endif %}">
+          </div>
+          <div class="medium-6 large-6 columns">
+            <label for="ContactFormEmail">{{ 'contact.form.email' | t }}</label>
+            <input type="email" id="ContactFormEmail" class="input-full form__input" name="contact[email]" placeholder="{{ 'contact.form.email' | t }}" autocorrect="off" autocapitalize="off" value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}">
+          </div>
+        </div>
+
+        {% if snippet_instance.settings.show_phone_field %}
+          {% assign name_attr = 'contact.form.phone' | t | handle %}
+          <label for="ContactFormPhone">{{ 'contact.form.phone' | t }}</label>
+          <input type="tel" id="ContactFormPhone" class="input-full form__input" name="contact[{{ name_attr }}]" placeholder="{{ 'contact.form.phone' | t }}" pattern="[0-9\-]*" value="{% if form[name_attr] %}{{ form[name_attr] }}{% elsif customer %}{{ customer.phone }}{% endif %}">
+        {% endif %}
+
+        <label for="ContactFormMessage">{{ 'contact.form.message' | t }}</label>
+        <textarea rows="5" id="ContactFormMessage" class="input-full form__input" name="contact[body]" placeholder="{{ 'contact.form.message' | t }}">{% if form.body %}{{ form.body }}{% endif %}</textarea>
+        {% render 'button-style', snippet_instance: snippet_instance, button_id: snippet_instance.id, btn_bg_color: snippet_instance.settings.btn_bg_color, btn_style: snippet_instance.settings.btn_style, btn_text_color: snippet_instance.settings.btn_text_color %}
+        <input id="button-{{ snippet_instance.id }}" type="submit" class="button {% if snippet_instance.settings.btn_style == 'hollow' %}hollow{% endif %}" value="{{ snippet_instance.settings.button_text }}">
+      {% endform %}
+    </div>
+  </div>
+</div>

@@ -1,0 +1,76 @@
+{%- render 'section-helper', snippet_instance: section, snippet_type: 'section', snippet_name: 'page-contact', section_class: 'page-contact-section', section_type: 'page-contact' -%}
+
+{% schema %}
+{
+  "name": "Page Content",
+  "settings": [     
+    {
+      "type": "header",
+      "content": "Form Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_form",
+      "label": "Display Contact Form",
+      "default": true,
+      "info": "Will be shown on the right side"
+    },
+    {
+      "type": "text",
+      "id": "form_title",
+      "label": "Form title",
+      "default": "Contact Form"
+    },      
+    {
+      "type": "header",
+      "content": "Content Style"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_custom_styles",
+      "label": "Enable Custom Styles",
+      "default": true
+    },        
+    {
+      "type": "range",
+      "id": "text_font_size",
+      "min": 12,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Text Font Size",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "spacing_top",
+      "min": 0,
+      "max": 200,
+      "step": 5,
+      "unit": "px",
+      "label": "Spacing: Top",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "spacing_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 5,
+      "unit": "px",
+      "label": "Spacing: Bottom",
+      "default": 50
+    },
+    {
+      "type": "header",
+      "content": "Background Style"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color"
+    }    
+  ]
+}
+{% endschema %}
+  

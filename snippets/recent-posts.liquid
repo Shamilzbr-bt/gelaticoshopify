@@ -1,0 +1,42 @@
+{% if snippet_instance.settings.blog_name != blank %}
+  {% assign blog_title = snippet_instance.settings.blog_name %}
+{% else %}
+  {% assign blog_title = 'news' %}
+{% endif %}
+
+<div class="content-section__inner">
+  {% unless snippet_instance.settings.title == blank %}
+    <div class="row columns text-{{snippet_instance.settings.title_alignment }}">
+      <h2 class="section-title section__title-style js-animate-appear-show">{{ snippet_instance.settings.title }}</h2>
+    </div>
+  {% endunless %}
+  <div class="row small-up-1 medium-up-3 large-up-3 recent-posts js-animate-appear-show">
+    {% for article in blogs[blog_title].articles limit: snippet_instance.settings.total %}
+      <div class="column recent-posts-item">
+        {% if article.image %}
+          <div class="post__image-wrap">
+            <a class="post__featured-img" href="{{ article.url }}"
+              style="background-image: url('{{ article.image | img_url: 'large' }}');">
+            </a>
+          </div>
+        {% endif %}
+
+        <div class="post__meta">
+          <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">{{ article.published_at | date: format: 'month_day_year' }}</time>
+        </div>
+
+        <h3 class="post__title"><a href="{{ article.url }}">{{ article.title }}</a></h3>
+
+        <div class="post__desc">
+          {% if article.excerpt.size > 0 %}
+            {{ article.excerpt }}
+          {% else %}
+            {{ article.content | strip_html | truncatewords: 20 }}
+          {% endif %}
+        </div>
+        <a class="post__read-more" href="{{ article.url }}">{{ 'blogs.article.read_more' | t }} <span class="icon icon-angle-right"></span></a>
+      </div>
+    {% endfor %}
+
+  </div>
+</div>

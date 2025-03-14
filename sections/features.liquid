@@ -1,0 +1,275 @@
+{%- capture section_id -%} section-{{-section.id-}} {%- endcapture -%}
+
+{% if section.settings.enable_custom_styles %}
+  {% render 'section-styles', section_id: section_id, instance_settings: section.settings %}
+{% endif %}
+
+<div id="{{ section_id }}" class="section">
+  <div data-section-id="{{ section.id }}" data-section-type="features"
+    class="content-section features-section">
+    {% unless section.settings.title == blank %}
+      <div class="content-section__inner row columns js-animate-appear-show">
+        <h2 class="section-title section__title-style text-{{ section.settings.content_alignment }}">{{ section.settings.title }}</h2>
+      </div>
+    {% endunless %}
+
+    {% case section.settings.row_size %}
+      {% when '3' %}
+        {% assign grid_settings = 'row small-up-1 medium-up-3 large-up-3' %}
+      {% when '4' %}
+        {% assign grid_settings = 'row small-up-2 medium-up-4 large-up-4' %}
+    {% endcase %}
+
+    <div class="{{ grid_settings }} content-section__inner features__grid js-animate-appear-up {% if section.settings.text_align == 'center'%}text-center{% endif %}">
+      {% for block in section.blocks %}
+        <div {{ block.shopify_attributes }} class="column features__item text-{{ section.settings.content_alignment }}">
+
+          {% if block.settings.icon != blank or block.settings.svg_code != blank %}
+            {% if block.settings.icon_click_url == blank %}
+              <div class="features__item__img" style="width: {{ block.settings.icon_width }}px">
+            {% else %}
+              <a href="{{ block.settings.icon_click_url }}" class="features__item__img" style="width: {{ block.settings.icon_width }}px" title="{{ block.settings.title }}">
+            {% endif %}
+
+            {% if block.settings.icon != blank %}
+              <img 
+                width="{{ block.settings.icon_width }}"
+                src="{{ block.settings.icon | img_url: '600x' }}"
+                loading="lazy"
+                width="500"
+                height="{{ 500 | divided_by: block.settings.icon.aspect_ratio | ceil }}"
+                alt="{{ block.settings.title }}">
+            {% elsif block.settings.svg_code != blank %}
+              {{ block.settings.svg_code }}
+            {% endif %}
+
+            {% if block.settings.icon_click_url == blank %}
+              </div>
+            {% else %}
+              </a>
+            {% endif %}
+          {% endif %}
+
+          {% unless block.settings.title == blank %}
+            <h3 class="features__item__title section__heading-style">
+              {% if block.settings.icon_click_url != blank %}
+                <a href="{{ block.settings.icon_click_url }}" class="features__item__title-link">
+              {% endif %}
+                {{ block.settings.title }}
+              {% if block.settings.icon_click_url != blank %}
+                </a>
+              {% endif %}
+            </h3>
+          {% endunless %}
+
+          {% unless block.settings.description == blank %}
+            <div class="features__item__text section__text-style">
+              {{ block.settings.description }}
+            </div>
+          {% endunless %}
+
+        </div>
+      {% endfor %}
+
+    </div>
+  </div>
+</div>
+
+
+{% schema %}
+  {
+    "name": "Features",
+    "settings": [
+      {
+        "type": "header",
+        "content": "General Settings"
+      },
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Section Title",
+        "default": "Features"
+      },
+      {
+        "type": "select",
+        "id": "content_alignment",
+        "label": "Content Alignment",
+        "default": "center",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          },
+          {
+            "value": "center",
+            "label": "Center"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "id": "row_size",
+        "label": "Items per row",
+        "default": "3",
+        "options": [
+          {
+            "value": "3",
+            "label": "3"
+          },
+          {
+            "value": "4",
+            "label": "4"
+          }
+        ]
+      },
+      {
+        "type": "header",
+        "content": "Content Style"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_custom_styles",
+        "label": "Enable Custom Styles",
+        "default": true
+      },
+      {
+        "type": "color",
+        "id": "title_color",
+        "label": "Section Title Color"
+      },
+      {
+        "type": "color",
+        "id": "heading_color",
+        "label": "Feature Heading Color"
+      },
+      {
+        "type": "color",
+        "id": "text_color",
+        "label": "Text Color"
+      },
+      {
+        "type": "range",
+        "id": "title_font_size",
+        "min": 12,
+        "max": 100,
+        "step": 1,
+        "unit": "px",
+        "label": "Section Title Size",
+        "default": 21
+      },
+      {
+        "type": "range",
+        "id": "heading_font_size",
+        "min": 12,
+        "max": 100,
+        "step": 1,
+        "unit": "px",
+        "label": "Feature Heading Size",
+        "default": 21
+      },
+      {
+        "type": "range",
+        "id": "text_font_size",
+        "min": 12,
+        "max": 55,
+        "step": 1,
+        "unit": "px",
+        "label": "Text Font Size",
+        "default": 14
+      },
+      {
+        "type": "range",
+        "id": "spacing_top",
+        "min": 0,
+        "max": 200,
+        "step": 5,
+        "unit": "px",
+        "label": "Spacing: Top",
+        "default": 50
+      },
+      {
+        "type": "range",
+        "id": "spacing_bottom",
+        "min": 0,
+        "max": 200,
+        "step": 5,
+        "unit": "px",
+        "label": "Spacing: Bottom",
+        "default": 50
+      },
+      {
+        "type": "header",
+        "content": "Background Style"
+      },
+      {
+        "type": "color",
+        "id": "background_color",
+        "label": "Background Color"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "feature",
+        "name": "Features Item",
+        "settings": [
+          {
+            "type": "image_picker",
+            "id": "icon",
+            "label": "Icon"
+          },
+          {
+            "type": "range",
+            "id": "icon_width",
+            "min": 20,
+            "max": 400,
+            "step": 5,
+            "unit": "px",
+            "label": "Icon width (max)",
+            "default": 400
+          },
+          {
+            "type": "html",
+            "id": "svg_code",
+            "label": "SVG Image Code",
+            "info": "You can insert SVG code here. It will be used if no image is selected."
+          },
+          {
+            "type": "url",
+            "id": "icon_click_url",
+            "label": "Make Icon and Title Clickable",
+            "info": "Specify the URL address if you want to make the item to be clickable."
+          },
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Title",
+            "default": "Feature Item Title"
+          },
+          {
+            "type": "richtext",
+            "id": "description",
+            "label": "Description",
+            "default": "<p>Short Description</p>"
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Features",
+        "category": "Content",
+        "blocks": [
+          {
+            "type": "feature"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

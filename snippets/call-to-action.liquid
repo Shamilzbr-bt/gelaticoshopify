@@ -1,0 +1,53 @@
+<div class="row cta-section__wrap js-animate-appear-show">
+  {% if snippet_instance.settings.icon != blank or snippet_instance.settings.svg_code != blank %}
+      <div class="medium-2 large-2 columns cta__icon">
+        {% if snippet_instance.settings.icon_click_url != blank %}
+          <a href="{{ snippet_instance.settings.icon_click_url }}" class="cta__icon-link">
+        {% endif %}
+
+          {% if snippet_instance.settings.icon != blank %}
+            {% liquid 
+              if snippet_instance.settings.set_icon_width 
+                assign iconWidth = snippet_instance.settings.icon_width                
+              else
+                assign iconWidth = snippet_instance.settings.icon.width
+              endif
+            %}
+            <img                             
+              src="{{ snippet_instance.settings.icon | img_url: 'grande' }}" 
+              loading="lazy" 
+              width={{ iconWidth }}
+              height="{{ iconWidth | divided_by: snippet_instance.settings.icon.aspect_ratio | ceil }}"
+              alt="{{ snippet_instance.settings.title }}">
+          {% elsif snippet_instance.settings.svg_code != blank %}
+            <div class="cta__svg-wrap" style="{% if snippet_instance.settings.set_icon_width %}width:{{ snippet_instance.settings.icon_width }}px{% endif %}">
+              {{ snippet_instance.settings.svg_code }}
+            </div>
+          {% endif %}
+
+        {% if snippet_instance.settings.icon_click_url != blank %}
+          </a>
+        {% endif %}
+      </div>
+  {% endif %}
+  <div class="medium-7 large-7 columns cta__content">
+    <h3 class="cta__title section__title-style">
+      {% if snippet_instance.settings.icon_click_url != blank %}
+        <a href="{{ snippet_instance.settings.icon_click_url }}" class="cta__title-link">
+      {% endif %}
+        {{ snippet_instance.settings.title }}
+      {% if snippet_instance.settings.icon_click_url != blank %}
+        </a>
+      {% endif %}
+    </h3>
+    {% unless snippet_instance.settings.description == blank %}
+      <p class="cta__subtitle section__text-style">{{ snippet_instance.settings.description }}</p>
+    {% endunless %}
+  </div>
+  <div class="medium-3 large-3 columns cta__btn">
+    {% if snippet_instance.settings.btn_link != blank %}
+      {% render 'button-style', snippet_instance: snippet_instance, button_id: snippet_instance.id, btn_bg_color: snippet_instance.settings.btn_bg_color, btn_style: snippet_instance.settings.btn_style, btn_text_color: snippet_instance.settings.btn_text_color %}
+      <a id="button-{{ snippet_instance.id }}" href="{{ snippet_instance.settings.btn_link }}" class="button white {% if snippet_instance.settings.btn_style == 'hollow' %}hollow{% endif %}">{{ snippet_instance.settings.btn_text }}</a>
+    {% endif %}
+  </div>
+</div>

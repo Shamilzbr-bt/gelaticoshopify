@@ -1,0 +1,929 @@
+{% if settings.fixed_header %}
+<sticky-header>
+{% endif %}  
+<div class="header-container {% if settings.fixed_header %}fixed-header{% endif %}" data-section-id="{{ section.id }}" data-section-type="header">
+  <!-- begin top-bar -->
+  {% assign secondary_menu_id = section.settings.secondary_menu %}
+  {% if section.settings.topbar_text != blank or section.settings.topbar_text_mobile != blank or secondary_menu_id != blank %}
+    <div id="top-bar">
+      <div class="row">
+        <div class="small-12 medium-12 large-6 columns top-bar-message__wrap">
+          {% if section.settings.topbar_text != blank %}
+            <div class="top-bar-message show-for-large rte-raw">
+              {{ section.settings.topbar_text }}
+            </div>
+          {% endif %}
+          {% if section.settings.topbar_text_mobile != blank %}
+            <div class="top-bar-message hide-for-large rte-raw">
+              {{ section.settings.topbar_text_mobile }}
+            </div>
+          {% endif %}
+        </div>
+        <div class="show-for-large medium-6 large-6 columns text-right header__secondary-menu">
+          {% if secondary_menu_id != blank or settings.enable_currency_switch %}
+            <ul class="menu top-bar-menu">
+              {% for link in linklists[secondary_menu_id].links %}
+                <li class="top-bar-menu__item"><a class="top-bar-menu__link" href="{{ link.url }}">{{ link.title }}</a></li>
+              {% endfor %}
+              {% if settings.enable_currency_switch %}
+                <li class="top-bar-menu__item">
+                  {% render 'currency-switch', snippet_usage: 'desktop' %}
+                </li>
+              {% endif %}
+            </ul>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  {% endif %}
+  <!-- //top-bar -->
+
+  {% if section.settings.enable_mega_menu %}
+    {% assign mega_menu_parents = '' | split: '' %}
+
+    {% for block in section.blocks %}
+      {% assign mega_menu_parent = block.settings.parent_id | downcase | split: '_' %}
+      {% assign mega_menu_parents = mega_menu_parents | concat: mega_menu_parent %}
+    {% endfor %}
+
+    {% assign mega_menu_parents = mega_menu_parents | uniq %}
+
+    {% for mega_menu_id in mega_menu_parents %}
+      {% render 'mega-menu', section: section, mega_menu_id: mega_menu_id %}
+    {% endfor %}
+  {% endif %}
+  <!-- begin main-header -->
+  <header id="main-header">
+    <div class="row">
+      <div class="small-3 medium-3 columns hide-for-large">
+        <div class="burger-container" data-toggle="mobileMenuSidebar">
+          <div id="burger">
+            <div class="bar topBar"></div>
+            <div class="bar btmBar"></div>
+          </div>
+        </div>
+      </div>
+      <div class="small-6 medium-6 large-3 columns header__logo">
+          <div class="logo-wrap">
+            {% if settings.logo_use_image %}
+
+              {% if settings.logo_image == blank %}
+                {% capture logo_src %}{{ 'logo.png' | asset_url }} {% endcapture %}
+                {% assign logo_height = 'auto' %}
+              {% else %}
+                {% capture logo_src %}{{ settings.logo_image | img_url: '512x' }} {% endcapture %}
+                {% assign logo_height =  400 | divided_by: settings.logo_image.aspect_ratio | ceil %}
+              {% endif %}
+
+              {% if template.name == 'index' %}
+                <h1 itemscope itemtype="http://schema.org/Organization" class="header__title_img">
+                  <a href="/" itemprop="url" class="logo__link" title="{{ shop.name }}" style="width:{{settings.logo_max_width}}px">
+                    <img 
+                      class="logo__img" 
+                      src="{{ logo_src }}"
+                      loading="lazy"
+                      width="400"
+                      height="{{ logo_height }}"
+                      alt="{{ shop.name }}" 
+                      itemprop="logo"
+                    >
+                  </a>
+                </h1>
+              {% else %}
+                <div itemscope itemtype="http://schema.org/Organization">
+                  <a href="/" itemprop="url" class="logo__link" title="{{ shop.name }}" style="width:{{settings.logo_max_width}}px">
+                    <img 
+                      class="logo__img" 
+                      src="{{ logo_src }}" 
+                      loading="lazy"
+                      width="400"
+                      height="{{ logo_height }}"                      
+                      alt="{{ shop.name }}" 
+                      itemprop="logo">
+                  </a>
+                </div>
+              {% endif %}
+            {% else %}
+              <h1 class="header__title" itemscope itemtype="http://schema.org/Organization">
+                <a href="/" itemprop="url">{{ shop.name }}</a>
+              </h1>
+            {% endif %}
+          </div>
+      </div>
+      <div class="large-6 columns show-for-large primary-menu-container">
+        {% assign main_menu_id = section.settings.main_menu %}
+
+        {% if section.settings.enable_mega_menu == false %}
+          {% if main_menu_id != blank %}
+            <dropdown-menu>
+              <ul id="primary-menu" class="dropdown menu">
+                {% for link in linklists[main_menu_id].links %}
+                  {% assign child_list_handle = link.title | handleize %}
+
+                  {% if linklists[child_list_handle].links != blank %}
+                    <li class="menu-item {% if link.active %} menu__active{% endif %} {% if linklists[child_list_handle].links.size != 0 %}menu-item_parent{% endif %}">
+                      <a href="{{ link.url }}" class="menu-item-link">{{ link.title }}</a>
+                      <ul class="sub-menu submenu">
+                        {% for childlink in linklists[child_list_handle].links %}
+                          {% assign grand_child_list_handle = childlink.title | handleize %}
+                          {% if linklists[grand_child_list_handle].links != blank %}
+                            <li class="menu-item menu-item_parent {% if childlink.active %} menu__active{% endif %}">
+                              <a href="{{ childlink.url }}" class="menu-item-link">{{ childlink.title | escape }}</a>
+                              <ul class="sub-menu submenu">
+                                {% for grand_childlink in linklists[grand_child_list_handle].links %}
+                                  <li class="menu-item {% if grand_childlink.active %} menu__active{% endif %}">
+                                    <a href="{{ grand_childlink.url }}" class="menu-item-link">{{ grand_childlink.title | escape }}</a>
+                                  </li>
+                                {% endfor %}
+                              </ul>
+                            </li>
+                          {% else %}
+                            <li class="menu-item {% if childlink.active %} menu__active{% endif %}">
+                              <a href="{{ childlink.url }}" class="menu-item-link">{{ childlink.title | escape }}</a>
+                            </li>
+                          {% endif %}
+                        {% endfor %}
+                      </ul>
+                    </li>
+                  {% else %}
+                    <li class="menu-item {% if link.active %} menu__active{% endif %}">
+                      <a href="{{ link.url }}" class="menu-item-link">{{ link.title }}</a>
+                    </li>
+                  {% endif %}
+
+                {% endfor %}
+              </ul>
+            </dropdown-menu>
+          {% endif %}
+
+        {% else %}
+
+          {% if main_menu_id != blank %}
+            <mega-menu>
+              <ul id="primary-menu" class=" menu primary-mega-menu">
+                {% for link in linklists[main_menu_id].links %}
+                  {% assign child_list_handle = link.title | handleize %}
+
+                  {% assign menu_item_id = forloop.index | downcase %}
+                  {% assign menu_item_handle = link.title | downcase %}
+
+                  {% if mega_menu_parents contains menu_item_id %}
+                    {%- capture mega_menu_toggle -%} data-toggle="mega-menu-{{ menu_item_id }}" {%- endcapture -%}
+                    {% assign dropdown_arrow_class = 'mega-menu__parent-item' %}
+                  {% elsif mega_menu_parents contains menu_item_handle %}
+                    {%- capture mega_menu_toggle -%} data-toggle="mega-menu-{{ link.title | handleize }}"  {%- endcapture -%}
+                    {% assign dropdown_arrow_class = 'mega-menu__parent-item' %}
+                  {% else %}
+                    {%- capture mega_menu_toggle -%} {%- endcapture -%}
+                    {% assign dropdown_arrow_class = '' %}
+                  {% endif %}
+
+                  <li class="menu-item {% if link.active %} menu__active{% endif %}">
+                    <a href="{{ link.url }}" class="menu-item-link {{ dropdown_arrow_class }}" {{ mega_menu_toggle }} title="{{ link.title }}">{{ link.title }}</a>
+                  </li>
+
+                {% endfor %}
+              </ul>
+            </mega-menu>
+          {% endif %}
+        {% endif %}
+      </div>
+      <div class="small-3 medium-3 large-3 columns text-right">
+        <dropdown-menu>
+          <ul id="header-right-menu" class="dropdown menu">
+            {% if settings.header_show_search %}              
+              <li class="menu-item show-for-large header__search">
+                <header-search>
+                  <form action="/search" method="get" class="" role="search">
+                    <input type="hidden" name="type" value="product">
+                    <input type="search" name="q" value="{{ search.terms | escape }}" placeholder="{{ 'general.search.placeholder' | t }}" aria-label="{{ 'general.search.placeholder' | t }}">
+                    <button type="submit" class="header__search-btn">
+                      <span class="icon icon-search"></span>
+                    </button>
+                  </form>
+                </header-search>
+              </li>
+            {% endif %}
+
+            {% if shop.customer_accounts_enabled and settings.account_link %}
+              <li class="menu-item menu-item_parent show-for-large header__user">
+                <a class="menu-item-link" href="/account/">
+                  <span class="icon icon-user-avatar"></span>
+                </a>
+                <ul class="sub-menu submenu text-left">
+                  {% if customer %}
+                    <li class="menu-item">
+                      <a href="/account" class="menu-item-link">{{ 'layout.customer.account' | t }}</a>
+                    </li>
+                    <li class="menu-item">
+                      {{ 'layout.customer.log_out' | t | customer_logout_link }}
+                    </li>
+                  {% else %}
+                    <li class="menu-item">
+                      {{ 'layout.customer.log_in' | t | customer_login_link }}
+                    </li>
+                    <li class="menu-item">
+                      {{ 'layout.customer.create_account' | t | customer_register_link }}
+                    </li>
+                  {% endif %}
+                </ul>
+              </li>
+            {% endif %}
+
+            <li class="menu-item header__cart" {% if settings.ajax_cart_method == "drawer" %}data-toggle="cartSidebar"{% endif %}>
+              <a class="menu-item-link" {% if settings.ajax_cart_method != "drawer" %}href="/cart"{% endif %}>
+                <span class="icon icon-bag"></span>
+                <div class="header__cart-count {% if settings.cart_icon_style == 'simple' %}header__cart-count_simple{% endif %} {% if cart.item_count == 0 %}hidden-count{% endif %}">
+                  <span id="CartCount">{{ cart.item_count }}</span>
+                </div>
+
+                <span class="visually-hidden">{{ 'layout.cart.title' | t | upcase }}
+                  <span id="CartCost">{{ cart.total_price | money }}</span>
+                </span>
+              </a>
+            </li>
+          </ul>
+        </dropdown-menu>
+      </div>
+    </div>
+  </header>
+  <!-- //main-header -->
+
+</div>
+
+{% if settings.fixed_header %}
+</sticky-header>
+{% endif %}  
+
+{% schema %}
+  {
+    "name": "Header",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Top Bar Settings"
+      },
+      {
+        "type": "richtext",
+        "id": "topbar_text",
+        "label": "Top bar text",
+        "default": "<p>Add your text here</p>"
+      },
+      {
+        "type": "richtext",
+        "id": "topbar_text_mobile",
+        "label": "Top bar text for mobile",
+        "default": "<p>Add your text here</p>"
+      },
+      {
+        "type": "link_list",
+        "id": "secondary_menu",
+        "label": "Select Secondary Menu"
+      },
+      {
+        "type": "header",
+        "content": "Main Menu Settings"
+      },
+      {
+        "type": "link_list",
+        "id": "main_menu",
+        "label": "Select Main Menu",
+        "default": "main-menu"
+      },
+      {
+        "type": "header",
+        "content": "Mega Menu Settings"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_mega_menu",
+        "label": "Enable Mega Menu",
+        "default": false
+      },
+      {
+        "type": "paragraph",
+        "content": "Add content for mega menu below"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "mega-menu-nav",
+        "name": "Menu",
+        "settings": [
+          {
+            "type": "text",
+            "id": "parent_id",
+            "label": "Menu item",
+            "default": "1",
+            "info": "Menu item it belongs to (title or number)."
+          },
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Title",
+            "default": "Navigation"
+          },
+          {
+            "type": "link_list",
+            "id": "menu",
+            "label": "Select menu"
+          },
+          {
+            "type": "select",
+            "id": "content_width",
+            "label": "Content Width",
+            "default": "1-4",
+            "options": [
+              {
+                "value": "1-4",
+                "label": "1/4"
+              },
+              {
+                "value": "1-3",
+                "label": "1/3"
+              },
+              {
+                "value": "1-2",
+                "label": "1/2"
+              },
+              {
+                "value": "2-3",
+                "label": "2/3"
+              },
+              {
+                "value": "3-4",
+                "label": "3/4"
+              },
+              {
+                "value": "full",
+                "label": "Full"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "banner",
+        "name": "Banner",
+        "settings": [
+          {
+            "type": "text",
+            "id": "parent_id",
+            "label": "Menu item",
+            "default": "1",
+            "info": "Menu item it belongs to (title or number)."
+          },
+          {
+            "type": "select",
+            "id": "content_width",
+            "label": "Content Width",
+            "default": "1-4",
+            "options": [
+              {
+                "value": "1-4",
+                "label": "1/4"
+              },
+              {
+                "value": "1-3",
+                "label": "1/3"
+              },
+              {
+                "value": "1-2",
+                "label": "1/2"
+              },
+              {
+                "value": "2-3",
+                "label": "2/3"
+              },
+              {
+                "value": "3-4",
+                "label": "3/4"
+              },
+              {
+                "value": "full",
+                "label": "Full"
+              }
+            ]
+          },
+          {
+            "type": "image_picker",
+            "id": "banner_image",
+            "label": "Image"
+          },
+          {
+            "type": "url",
+            "id": "img_click_link",
+            "label": "Clickable image (enter URL)"
+          },
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Title",
+            "default": "Special Offer"
+          },
+          {
+            "type": "richtext",
+            "id": "text",
+            "label": "Text"
+          },
+          {
+            "type": "select",
+            "id": "alignment",
+            "label": "Text Alignment",
+            "default": "center",
+            "options": [
+              {
+                "value": "left",
+                "label": "Left"
+              },
+              {
+                "value": "center",
+                "label": "Center"
+              }
+            ]
+          },
+          {
+            "type": "header",
+            "content": "Add a button"
+          },
+          {
+            "type": "url",
+            "id": "btn_link",
+            "label": "Button URL"
+          },
+          {
+            "type": "text",
+            "id": "btn_text",
+            "label": "Button Text",
+            "default": "Details"
+          },
+          {
+            "type": "header",
+            "content": "Button Style"
+          },
+          {
+            "type": "select",
+            "id": "btn_style",
+            "label": "Button Style",
+            "default": "full",
+            "options": [
+              {
+                "value": "full",
+                "label": "Filled"
+              },
+              {
+                "value": "hollow",
+                "label": "Hollow"
+              }
+            ]
+          },
+          {
+            "type": "color",
+            "id": "btn_bg_color",
+            "label": "Button Background Color"
+          },
+          {
+            "type": "color",
+            "id": "btn_text_color",
+            "label": "Button Text Color"
+          }
+        ]
+      },
+      {
+        "type": "html",
+        "name": "Html",
+        "settings": [
+          {
+            "type": "text",
+            "id": "parent_id",
+            "label": "Menu item",
+            "default": "1",
+            "info": "Menu item it belongs to (title or number)."
+          },
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Title",
+            "default": "Custom Html"
+          },
+          {
+            "type": "html",
+            "id": "html",
+            "label": "Html"
+          },
+          {
+            "type": "select",
+            "id": "content_width",
+            "label": "Content Width",
+            "default": "1-4",
+            "options": [
+              {
+                "value": "1-4",
+                "label": "1/4"
+              },
+              {
+                "value": "1-3",
+                "label": "1/3"
+              },
+              {
+                "value": "1-2",
+                "label": "1/2"
+              },
+              {
+                "value": "2-3",
+                "label": "2/3"
+              },
+              {
+                "value": "3-4",
+                "label": "3/4"
+              },
+              {
+                "value": "full",
+                "label": "Full"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "text",
+        "name": "Text",
+        "settings": [
+          {
+            "type": "text",
+            "id": "parent_id",
+            "label": "Menu item",
+            "default": "1",
+            "info": "Menu item it belongs to (title or number)."
+          },
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Title",
+            "default": "Custom Text"
+          },
+          {
+            "type": "richtext",
+            "id": "text",
+            "label": "Text",
+            "default": "<p>Add some text here.</p>"
+          },
+          {
+            "type": "checkbox",
+            "id": "show_social_links",
+            "label": "Display Social Network Icons",
+            "default": true
+          },
+          {
+            "type": "select",
+            "id": "content_width",
+            "label": "Content Width",
+            "default": "1-4",
+            "options": [
+              {
+                "value": "1-4",
+                "label": "1/4"
+              },
+              {
+                "value": "1-3",
+                "label": "1/3"
+              },
+              {
+                "value": "1-2",
+                "label": "1/2"
+              },
+              {
+                "value": "2-3",
+                "label": "2/3"
+              },
+              {
+                "value": "3-4",
+                "label": "3/4"
+              },
+              {
+                "value": "full",
+                "label": "Full"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "newsletter",
+        "name": "Newsletter",
+        "settings": [
+          {
+            "type": "text",
+            "id": "parent_id",
+            "label": "Menu item",
+            "default": "1",
+            "info": "Menu item it belongs to (title or number)."
+          },
+          {
+            "type": "select",
+            "id": "content_width",
+            "label": "Content Width",
+            "default": "1-4",
+            "options": [
+              {
+                "value": "1-4",
+                "label": "1/4"
+              },
+              {
+                "value": "1-3",
+                "label": "1/3"
+              },
+              {
+                "value": "1-2",
+                "label": "1/2"
+              },
+              {
+                "value": "2-3",
+                "label": "2/3"
+              },
+              {
+                "value": "3-4",
+                "label": "3/4"
+              },
+              {
+                "value": "full",
+                "label": "Full"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Title",
+            "default": "Join the newsletter"
+          },
+          {
+            "type": "richtext",
+            "id": "text",
+            "label": "Description",
+            "default": "<p>Add some text here.</p>"
+          },
+          {
+            "type": "text",
+            "id": "newsletter_form_action",
+            "label": "MailChimp form action URL",
+            "info": "[Where do I find my MailChimp form action URL?](https:\/\/wpexplorer-themes.com\/total\/docs\/mailchimp-form-action-url)"
+          },
+          {
+            "type": "text",
+            "id": "button_text",
+            "label": "Button Text",
+            "default": "Subscribe"
+          }
+        ]
+      },
+      {
+        "type": "collection-widget",
+        "name": "Collection",
+        "settings": [
+          {
+            "type": "text",
+            "id": "parent_id",
+            "label": "Menu item",
+            "default": "1",
+            "info": "Menu item it belongs to (title or number)."
+          },
+          {
+            "type": "select",
+            "id": "content_width",
+            "label": "Content Width",
+            "default": "1-4",
+            "options": [
+              {
+                "value": "1-4",
+                "label": "1/4"
+              },
+              {
+                "value": "1-3",
+                "label": "1/3"
+              },
+              {
+                "value": "1-2",
+                "label": "1/2"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Title",
+            "default": "Featured Collection"
+          },
+          {
+            "type": "collection",
+            "id": "collection",
+            "label": "Collection"
+          },
+          {
+            "type": "checkbox",
+            "id": "show_collection_items_count",
+            "label": "Show Items Count",
+            "default": true
+          }
+        ]
+      },
+      {
+        "type": "product-widget",
+        "name": "Product",
+        "settings": [
+          {
+            "type": "text",
+            "id": "parent_id",
+            "label": "Menu item",
+            "default": "1",
+            "info": "Menu item it belongs to (title or number)."
+          },
+          {
+            "type": "select",
+            "id": "content_width",
+            "label": "Content Width",
+            "default": "1-4",
+            "options": [
+              {
+                "value": "1-4",
+                "label": "1/4"
+              },
+              {
+                "value": "1-3",
+                "label": "1/3"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Title",
+            "default": "Featured Product"
+          },
+          {
+            "type": "product",
+            "id": "product",
+            "label": "Product"
+          }
+        ]
+      },
+      {
+        "type": "products-widget",
+        "name": "Products",
+        "settings": [
+          {
+            "type": "text",
+            "id": "parent_id",
+            "label": "Menu item",
+            "default": "1",
+            "info": "Menu item it belongs to (title or number)."
+          },
+          {
+            "type": "range",
+            "id": "total",
+            "min": 1,
+            "max": 4,
+            "step": 1,
+            "label": "Number of products to be displayed",
+            "default": 4
+          },
+          {
+            "type": "select",
+            "id": "content_width",
+            "label": "Product Item Width",
+            "default": "1-4",
+            "options": [
+              {
+                "value": "1-4",
+                "label": "1/4"
+              },
+              {
+                "value": "1-3",
+                "label": "1/3"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Title",
+            "default": "Featured Products"
+          },
+          {
+            "type": "collection",
+            "id": "collection",
+            "label": "Collection"
+          }
+        ]
+      },
+      {
+        "type": "google-maps",
+        "name": "Google Map",
+        "settings": [
+          {
+            "type": "paragraph",
+            "content": "This block will take the full width of the mega menu. It is better to display this block on a separate mega menu."
+          },
+          {
+            "type": "text",
+            "id": "parent_id",
+            "label": "Menu item",
+            "default": "1",
+            "info": "Menu item it belongs to (title or number)."
+          },
+          {
+            "type": "header",
+            "content": "Address Info"
+          },
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Heading",
+            "default": "Our store"
+          },
+          {
+            "type": "richtext",
+            "id": "description",
+            "label": "Description"
+          },
+          {
+            "type": "richtext",
+            "id": "address",
+            "label": "Street Address",
+            "default": "<p>960 Orange Ave, <br>Coronado, CA 92118</p>"
+          },
+          {
+            "type": "richtext",
+            "id": "hours",
+            "label": "Hours",
+            "default": "<p>Mon - Fri, 10am - 9pm<br>Saturday, 11am - 9pm<br>Sunday, 11am - 5pm</p>"
+          },
+          {
+            "type": "richtext",
+            "id": "phone",
+            "label": "Phone Number",
+            "default": "<p>+99999999</p>"
+          },
+          {
+            "type": "text",
+            "id": "email",
+            "label": "Email",
+            "default": "hi@outlane.co"
+          },
+          {
+            "type": "header",
+            "content": "Location"
+          },
+          {
+            "id": "map_address",
+            "type": "text",
+            "label": "Map address",
+            "info": "Google Maps will find the exact location",
+            "default": "960 Orange Ave, Coronado, CA 92118"
+          },
+          {
+            "type": "url",
+            "id": "button_url",
+            "label": "Button URL"
+          },
+          {
+            "type": "text",
+            "id": "button_text",
+            "label": "Map link label",
+            "default": "Get directions"
+          },
+          {
+            "type": "header",
+            "content": "Button Style"
+          },
+          {
+            "type": "select",
+            "id": "btn_style",
+            "label": "Button Style",
+            "default": "full",
+            "options": [
+              {
+                "value": "full",
+                "label": "Filled"
+              },
+              {
+                "value": "hollow",
+                "label": "Hollow"
+              }
+            ]
+          },
+          {
+            "type": "color",
+            "id": "btn_bg_color",
+            "label": "Button Background Color"
+          },
+          {
+            "type": "color",
+            "id": "btn_text_color",
+            "label": "Button Text Color"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

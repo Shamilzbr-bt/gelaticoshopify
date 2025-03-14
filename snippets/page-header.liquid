@@ -1,0 +1,48 @@
+{% liquid 
+  if section.settings.breadcrumb and section.settings.breadcrumb_position == 'above'
+    render 'breadcrumb'
+  endif %}
+
+{% if the_title %}
+  {% assign the_page_title = the_title %}
+{% else %}
+  {% capture the_page_title %}<h1 class="page__header__title section__title-style">{{page.title}}</h1>{% endcapture %}
+{% endif %}
+
+{% if snippet_instance.settings.section_identifier != blank %}
+  {% assign section_id = snippet_instance.settings.section_identifier %}
+{% else %}
+  {%- capture section_id -%} header-{{-snippet_instance.id-}} {%- endcapture -%}
+{% endif %}
+
+
+{% liquid
+  if bg_image == blank
+    assign bg_image = snippet_instance.settings.background_image
+  endif
+
+  if snippet_instance.settings.enable_custom_styles
+    render 'section-styles', section_id: section_id, instance_settings: snippet_instance.settings, background_image: bg_image
+  endif
+  
+  if snippet_instance.settings.parallax and snippet_instance.settings.enable_custom_styles
+    assign parallax_class = 'section__content_parallax'
+  endif %}
+
+<div id="{{ section_id }}" class="section page__header {{ parallax_class }}">
+  <div class="content-section {{ section_class }} section__background">
+    <div class="background_darken"></div>
+    <div class="content-section__inner row columns page__header__content {% if snippet_instance.settings.alignment == 'center' %}text-center{% endif %} text-shadow__{{- snippet_instance.settings.text_shadow -}} ">
+      {{ the_page_title }}
+      {% if template.name == 'collection' and the_description != blank %}
+        <div class="page__header__description section__heading-style">
+          {{ the_description }}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{% if section.settings.breadcrumb and section.settings.breadcrumb_position == 'below' %}
+  {% render 'breadcrumb' %}
+{% endif %}

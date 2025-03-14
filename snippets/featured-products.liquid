@@ -1,0 +1,70 @@
+<div class="content-section__inner">
+  {% unless snippet_instance.settings.title == blank %}
+    <div class="row columns text-{{ snippet_instance.settings.text_alignment }}">
+      <h2 class="section-title section__title-style">{{ snippet_instance.settings.title }}</h2>
+    </div>
+  {% endunless %}
+
+  {% liquid 
+     case snippet_instance.settings.grid
+      when '2'
+        assign carousel_settings = 2
+        assign grid_settings = 'row small-up-1 medium-up-2 large-up-2'
+      when '3'
+        assign carousel_settings = 3
+        assign grid_settings = 'row small-up-2 medium-up-3 large-up-3'
+      when '4'
+        assign carousel_settings = 4
+        assign grid_settings = 'row small-up-2 medium-up-4 large-up-4'
+      when '5'
+        assign carousel_settings = 5
+        assign grid_settings = 'row small-up-2 medium-up-5 large-up-5'
+      when '6'
+        assign carousel_settings = 6
+        assign grid_settings = 'row small-up-2 medium-up-6 large-up-6'
+    endcase
+  
+
+    assign collection_id = snippet_instance.settings.collection
+    if collection_id == blank
+      assign collection_id = 'frontpage'
+    endif %}
+
+  {% if collections[collection_id].products.size > 0 %}
+    {% if snippet_instance.settings.is_carousel %}
+    <products-carousel desktop="true" mobile="true" columns="{{carousel_settings}}"
+      main=".featured__grid__wrap" wrapper=".featured__grid__inner" track=".featured__grid" element=".column-block">
+    {% endif %}
+    <div class="featured__grid__wrap">
+      <div class="row columns">
+        <div class="featured__grid__inner">
+          <div class="{{ grid_settings }} featured__grid ">        
+            {% liquid
+              assign grid_item_width = 'column column-block'
+              for product in collections[collection_id].products limit: snippet_instance.settings.total
+                render 'product-grid-item', the_product: product, grid_item_width: grid_item_width
+              endfor %}        
+          </div>
+
+          {% if snippet_instance.settings.display_see_more_btn and snippet_instance.settings.see_more_btn_text != blank %}
+            <div class="row columns featured__show-all text-center">
+              {% render 'button-style', snippet_instance: snippet_instance, button_id: snippet_instance.id, btn_bg_color: snippet_instance.settings.btn_bg_color, btn_style: snippet_instance.settings.btn_style, btn_text_color: snippet_instance.settings.btn_text_color %}
+              <a id="button-{{- snippet_instance.id -}}" href="{{ collections[collection_id].url }}" class="button {% if snippet_instance.settings.btn_style == 'hollow' %}hollow{% endif %}" title="{{ snippet_instance.settings.see_more_btn_text }}">{{ snippet_instance.settings.see_more_btn_text }}</a>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    {% if snippet_instance.settings.is_carousel %}
+    </products-carousel>
+    {% endif %}
+  {% else %}
+
+    {% unless emptyState %}
+      {{ 'theme-onboarding.css' | global_asset_url | stylesheet_tag }}
+      {% assign emptyState = true %}
+    {% endunless %}
+    {% render 'onboarding-featured-products' %}
+
+  {% endif %}
+</div>

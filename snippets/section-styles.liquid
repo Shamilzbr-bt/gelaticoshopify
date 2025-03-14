@@ -1,0 +1,78 @@
+{% liquid 
+assign desktop_title_size = instance_settings.title_font_size
+assign desktop_heading_size = instance_settings.heading_font_size
+
+if desktop_title_size >= 30
+  assign mobile_title_size = desktop_title_size | divided_by: 1.4 | ceil
+else
+  assign mobile_title_size = desktop_title_size
+endif
+
+if desktop_heading_size >= 30
+  assign mobile_heading_size = desktop_heading_size | divided_by: 1.4 | ceil
+else
+  assign mobile_heading_size = desktop_heading_size
+endif
+
+if background_image == blank
+  assign background_image = instance_settings.background_image 
+endif %}
+
+<style>
+#{{ section_id }} .content-section {
+  {% if instance_settings.height != blank %}height: {{ instance_settings.height }}px; {% endif %}
+  {% if instance_settings.spacing_top != blank %}padding-top: {{ instance_settings.spacing_top }}px;{% endif %}
+  {% if instance_settings.spacing_bottom != blank %}padding-bottom: {{ instance_settings.spacing_bottom }}px;{% endif %}
+  {% if instance_settings.text_color != blank %}color: {{ instance_settings.text_color }};{% endif %}
+  {% if instance_settings.text_font_size != blank %}font-size: {{instance_settings.text_font_size}}px;{% endif %}
+  {% if instance_settings.background_color != blank %}background-color: {{ instance_settings.background_color }};{% endif %}
+  {% if background_image != blank and instance_settings.background_image_style == 'cover' %}
+    background-image: url('{{ background_image | img_url: '2048x' }}');
+  {% endif %}
+  {% if background_image != blank and instance_settings.background_image_style == 'repeat' %}
+    background-image: url('{{ background_image | img_url: '2048x' }}');
+    background-size: {{- background_image.width | divided_by: 2 -}}px auto;
+    background-repeat: repeat;
+  {% endif %}
+  {% if instance_settings.parallax == true %}background-attachment: fixed;{% endif %}
+}
+#{{ section_id }} .section__title-style {
+  {% if instance_settings.title_color != blank %}color: {{ instance_settings.title_color }};{% endif %}
+  {% if instance_settings.title_font_size != blank %}font-size: {{instance_settings.title_font_size}}px;{% endif %}
+}
+#{{ section_id }} .section__heading-style {
+  {% if instance_settings.heading_color != blank %}color: {{ instance_settings.heading_color }};{% endif %}
+  {% if instance_settings.heading_font_size != blank %}font-size: {{instance_settings.heading_font_size}}px;{% endif %}
+}
+#{{ section_id }} .section__text-style {
+  {% if instance_settings.text_color != blank %} color: {{ instance_settings.text_color }};{% endif %}
+  {% if instance_settings.text_font_size != blank %}font-size: {{instance_settings.text_font_size}}px;{% endif %}
+}
+{% if desktop_title_size != blank %}
+  #{{section_id}} .section__title-style { font-size: {{mobile_title_size}}px; }
+  @media print, screen and (min-width: 1024px) {
+    #{{section_id}} .section__title-style { font-size: {{desktop_title_size}}px; }
+  }
+{% endif %}
+{% if desktop_heading_size != blank %}
+  #{{section_id}} .section__heading-style { font-size: {{mobile_heading_size}}px; }
+  @media print, screen and (min-width: 1024px) {
+    #{{section_id}} .section__heading-style { font-size: {{desktop_heading_size}}px; }
+  }
+{% endif %}
+{% if instance_settings.darken != blank %}
+#{{section_id}} .background_darken {background:rgba(0,0,0,{{ instance_settings.darken | divided_by: 100.00 }})}
+{% endif %}
+{% if instance_settings.field_label_color != blank %}
+#{{section_id}} label {color: {{ instance_settings.field_label_color }};}
+{% endif %}
+#{{ section_id }} .form__input,
+#{{ section_id }} select {
+  {% if instance_settings.field_bg_color != blank %}background-color: {{ instance_settings.field_bg_color }};{% endif %}
+  {% if instance_settings.field_border_color != blank %}border-color: {{ instance_settings.field_border_color }};{% endif %}
+  {% if instance_settings.field_text_color != blank %}color: {{instance_settings.field_text_color}};{% endif %}
+}
+#{{ section_id }} .form__input::-webkit-input-placeholder {
+  {% if instance_settings.field_text_color != blank %}color: {{instance_settings.field_text_color}}; opacity: 0.5;{% endif %}
+}
+</style>

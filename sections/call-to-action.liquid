@@ -1,0 +1,240 @@
+{%- render 'section-helper', snippet_instance: section, snippet_type: 'section', snippet_name: 'call-to-action', section_class: 'cta-section', section_type: 'cta-section' -%}
+
+{% schema %}
+  {
+    "name": "Call To Action",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Content Settings"
+      },
+      {
+        "type": "image_picker",
+        "id": "icon",
+        "label": "Icon"
+      },
+      {
+        "type": "checkbox",
+        "id": "set_icon_width",
+        "label": "Set custom icon width",
+        "default": false
+      },
+      {
+        "type": "range",
+        "id": "icon_width",
+        "min": 20,
+        "max": 200,
+        "step": 5,
+        "unit": "px",
+        "label": "Icon width (max)",
+        "default": 200
+      },
+      {
+        "type": "html",
+        "id": "svg_code",
+        "label": "SVG Image Code",
+        "info": "You can insert SVG code here. It will be used if no image is selected."
+      },
+      {
+        "type": "url",
+        "id": "icon_click_url",
+        "label": "Make Icon and Title Clickable",
+        "info": "Specify the URL address if you want to make the item to be clickable."
+      },
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Title",
+        "default": "Call To Action"
+      },
+      {
+        "type": "textarea",
+        "id": "description",
+        "label": "Description",
+        "default": "Additional Information"
+      },
+      {
+        "type": "header",
+        "content": "Content Style"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_custom_styles",
+        "label": "Enable Custom Styles",
+        "default": true
+      },
+      {
+        "type": "color",
+        "id": "title_color",
+        "label": "Title Color"
+      },
+      {
+        "type": "color",
+        "id": "text_color",
+        "label": "Text Color"
+      },
+      {
+        "type": "select",
+        "id": "text_shadow",
+        "label": "Text shadow effect",
+        "options": [
+          {
+            "value": "none",
+            "label": "None"
+          },
+          {
+            "value": "soft",
+            "label": "Soft"
+          },
+          {
+            "value": "medium",
+            "label": "Medium"
+          },
+          {
+            "value": "intense",
+            "label": "Intense"
+          }
+        ],
+        "default": "none"
+      },
+      {
+        "type": "range",
+        "id": "title_font_size",
+        "min": 12,
+        "max": 100,
+        "step": 1,
+        "unit": "px",
+        "label": "Title Font Size",
+        "default": 32
+      },
+      {
+        "type": "range",
+        "id": "text_font_size",
+        "min": 12,
+        "max": 100,
+        "step": 1,
+        "unit": "px",
+        "label": "Text Font Size",
+        "default": 16
+      },
+      {
+        "type": "range",
+        "id": "spacing_top",
+        "min": 0,
+        "max": 200,
+        "step": 5,
+        "unit": "px",
+        "label": "Spacing: Top",
+        "default": 50
+      },
+      {
+        "type": "range",
+        "id": "spacing_bottom",
+        "min": 0,
+        "max": 200,
+        "step": 5,
+        "unit": "px",
+        "label": "Spacing: Bottom",
+        "default": 50
+      },
+      {
+        "type": "header",
+        "content": "Background Style"
+      },
+      {
+        "type": "color",
+        "id": "background_color",
+        "label": "Background Color"
+      },
+      {
+        "type": "image_picker",
+        "id": "background_image",
+        "label": "Background Image"
+      },
+      {
+        "type": "select",
+        "id": "background_image_style",
+        "label": "Background Image Style",
+        "default": "cover",
+        "options": [
+          {
+            "value": "cover",
+            "label": "Cover"
+          },
+          {
+            "value": "repeat",
+            "label": "Repeat"
+          }
+        ]
+      },
+      {
+        "type": "checkbox",
+        "id": "parallax",
+        "label": "Enable Parallax Effect",
+        "default": false
+      },
+      {
+        "type": "range",
+        "id": "darken",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "unit": "%",
+        "label": "Darken Background",
+        "default": 0
+      },
+      {
+        "type": "header",
+        "content": "Button Settings"
+      },
+      {
+        "type": "text",
+        "id": "btn_text",
+        "label": "Button Text"
+      },
+      {
+        "type": "url",
+        "id": "btn_link",
+        "label": "Button URL"
+      },
+      {
+        "type": "select",
+        "id": "btn_style",
+        "label": "Button Style",
+        "default": "full",
+        "options": [
+          {
+            "value": "full",
+            "label": "Filled"
+          },
+          {
+            "value": "hollow",
+            "label": "Hollow"
+          }
+        ]
+      },
+      {
+        "type": "color",
+        "id": "btn_bg_color",
+        "label": "Button Background Color"
+      },
+      {
+        "type": "color",
+        "id": "btn_text_color",
+        "label": "Button Text Color"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Call To Action",
+        "category": "Content"
+      }
+    ]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

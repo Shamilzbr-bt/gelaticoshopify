@@ -1,0 +1,15 @@
+{
+    "name": "Shipping page",
+    "sections": {
+        "page-header": {
+            "type": "page-header"
+        },
+        "main": {
+            "type": "page-content"
+        }
+    },
+    "order": [
+        "page-header",
+        "main"       
+    ]
+}

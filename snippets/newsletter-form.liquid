@@ -1,0 +1,25 @@
+<div class="row">
+  <div class="columns  newsletter-widget">
+    {% if snippet_instance.settings.newsletter_form_action != blank %}
+      <form action="{{ snippet_instance.settings.newsletter_form_action }}" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" target="_blank" class="input-group">
+        <div class="inline-signup newsletter__form-fields">
+          <input type="email" value="{% if customer %}{{ customer.email }}{% endif %}" placeholder="{{ 'general.newsletter_form.newsletter_email' | t }}" name="EMAIL" id="mail" class="input-group-field form__input" aria-label="{{ 'general.newsletter_form.newsletter_email' | t }}" autocapitalize="off">
+          <input type="submit" class="button" name="subscribe" id="subscribe" value="{{ snippet_instance.settings.button_text }}">
+        </div>
+      </form>
+    {% else %}
+      {% form 'customer' %}
+        {{ form.errors | default_errors }}
+        {% if form.posted_successfully? %}
+          <p class="note form-success">{{ 'general.newsletter_form.confirmation' | t }}</p>
+        {% else %}
+          <div class="inline-signup newsletter__form-fields">
+            <input class="form__input" type="email" value="{% if customer %}{{ customer.email }}{% endif %}" placeholder="{{ 'general.newsletter_form.newsletter_email' | t }}" name="contact[email]" id="Email" aria-label="{{ 'general.newsletter_form.newsletter_email' | t }}" autocapitalize="off">
+            <input type="hidden" name="contact[tags]" value="newsletter">
+            <input type="submit" class="button" name="subscribe" id="subscribe" value="{{ snippet_instance.settings.button_text }}">
+          </div>
+        {% endif %}
+      {% endform %}
+    {% endif %}
+  </div>
+</div>

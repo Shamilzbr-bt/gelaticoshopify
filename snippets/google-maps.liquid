@@ -1,0 +1,61 @@
+<div class="content-section__inner row columns js-animate-appear-show">
+  <div class="row contact__address__wrap">
+    {%- assign display_map = false -%}
+    {%- if settings.gmap_api_key != blank and snippet_instance.settings.map_address -%}
+      {%- assign display_map = true -%}
+    {%- endif -%}
+    <div class="columns contact__address__info {% if display_map %}contact__address_map-active{% endif %}">
+      {% unless snippet_instance.settings.title == blank %}
+        <h3 class="contact__address__title section__title-style">{{ snippet_instance.settings.title }}</h3>
+      {% endunless%}
+      {% unless snippet_instance.settings.description == blank %}
+        <div class="contact__address__about">{{ snippet_instance.settings.description }}</div>
+      {% endunless%}
+
+      <div class="row">
+        <div class="medium-6 large-6 columns">
+          {% unless snippet_instance.settings.address == blank %}
+            <div class="contact__address__street">{{ snippet_instance.settings.address }}</div>
+          {% endunless%}
+        </div>
+        <div class="medium-6 large-6 columns">
+          {% unless snippet_instance.settings.hours == blank %}
+            <div class="contact__address__hours">{{ snippet_instance.settings.hours }}</div>
+          {% endunless%}
+        </div>
+      </div>
+      <div class="row">
+        <div class="medium-6 large-6 columns">
+          {% unless snippet_instance.settings.phone == blank %}
+            <div class="contact__address__phone">{{ snippet_instance.settings.phone }}</div>
+          {% endunless%}
+        </div>
+        <div class="medium-6 large-6 columns">
+          {% unless snippet_instance.settings.email == blank %}
+            <div class="contact__address__email">{{ snippet_instance.settings.email }}</div>
+          {% endunless%}
+        </div>
+      </div>
+
+      {% unless snippet_instance.settings.button_text == blank %}
+        {% render 'button-style', snippet_instance: snippet_instance, button_id: snippet_instance.id, btn_bg_color: snippet_instance.settings.btn_bg_color, btn_style: snippet_instance.settings.btn_style, btn_text_color: snippet_instance.settings.btn_text_color %}
+        <a id="button-{{ snippet_instance.id }}" href="{% if snippet_instance.settings.button_url == blank %}https://maps.google.com?daddr={{ snippet_instance.settings.map_address | escape }}{% else %} {{ snippet_instance.settings.button_url }} {% endif %}"
+           class="button small {% if snippet_instance.settings.btn_style == 'hollow' %}hollow{% endif %}" {% if snippet_instance.settings.button_url == blank %}target="_blank"{% endif %}>
+           {{ snippet_instance.settings.button_text | escape }}
+        </a>
+      {% endunless %}
+    </div>
+
+    <div class="columns contact__map">      
+    {% if display_map %}
+        <google-maps>
+          <div style="height:400px;" class="map__container"
+              id="Map-{{ snippet_instance.id }}"
+              data-api-key="{{ settings.gmap_api_key }}"
+              data-address-setting="{{ snippet_instance.settings.map_address | escape }}">
+          </div>
+        </google-maps>
+      {% endif %}
+    </div>
+  </div>
+</div>

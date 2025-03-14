@@ -1,0 +1,159 @@
+{% comment %}
+  Set the extension of your color files below. Use 'png', 'jpeg', 'jpg' or 'gif'.
+{% endcomment %}
+
+<script>
+  window.hideDefaultSelector = window.hideDefaultSelector || function hideDefaultSelector(optionIndex) {  
+    document.querySelectorAll('.selector-wrapper').forEach((el, index) => {
+      if(index == parseInt(optionIndex)) {        
+        el.style.display = 'none';
+      }
+    });     
+  }  
+
+  window.swatchAvailable = window.swatchAvailable || function swatchAvailable(selector) {  
+    var el = document.querySelector(selector);
+    if(el) {
+      el.classList.remove('soldout');
+      el.classList.add('available');
+      el.querySelector('[type="radio"]').removeAttribute('disabled');
+    }
+  } 
+</script>
+
+{% assign file_extension = 'png' %}
+
+{% if swatch == blank %}
+<div class="swatch error"></div>
+{% else %}
+
+{% liquid 
+assign found_option = false
+assign is_color = false
+assign option_index = 0 %}
+
+{% for option in product.options %}
+  {% if option == swatch %}
+    {% assign found_option = true %}
+    {% assign option_index = forloop.index0 %}
+    <style>
+      label[for="product-select-option-{{ option_index }}"] { display: none; }
+      #product-select-option-{{ option_index }} { display: none; }
+      #product-select-option-{{ option_index }} + .custom-style-select-box { display: none !important; }
+    </style>
+    <script>
+      window.hideDefaultSelector({{ option_index }});      
+    </script>
+    {% liquid 
+      assign downcased_option = swatch | downcase
+      if downcased_option contains 'color' or downcased_option contains 'colour'
+        if settings.enable_color_swatches
+          assign is_color = true
+        endif 
+      endif %}
+  {% endif %}
+{% endfor %}
+{% unless found_option %}
+<div class="swatch error"></div>
+{% else %}
+<label>{{ swatch }} {{'' }}</label>
+<div class="swatch clearfix" data-option-index="{{ option_index }}">
+  {% assign values = '' %}
+  {% for variant in product.variants %}
+    {% assign value = variant.options[option_index] %}
+    {% unless values contains value %}
+      {% assign values = values | join: ',' %}
+      {% assign values = values | append: ',' | append: value %}
+      {% assign values = values | split: ',' %}
+      <div data-value="{{ value | escape }}" class="swatch-element {% if is_color %}color {% endif %}{{ value | handle | escape }} {% if variant.available %}available{% else %}soldout{% endif %}">
+        {% if is_color %}
+         {% capture tooltip %} data-tooltip title="{{value}}" {% endcapture %}
+        {% endif %}
+        <input id="swatch-{{ option_index }}-{{ value | handle | escape }}" type="radio" name="option-{{ option_index }}" value="{{ value | escape }}"{% if forloop.first %} checked{% endif %} {% unless variant.available %}disabled{% endunless %} />
+        {% if is_color %}
+        <label {{tooltip}} data-count="{{ forloop.index0 }}" for="swatch-{{ option_index }}-{{ value | handle | escape }}">
+          <span class="swatch-element__inner" style="background-color: {{ value | split: ' ' | last | handle }}; background-image: url({{ value | handle | append: '.' | append: file_extension | asset_url }})">
+            <img 
+              class="crossed-out"               
+              src="{{ 'soldout.png' | asset_url }}"               
+              loading="lazy"
+              width="32"
+              height="32"          
+            >
+          </span>
+        </label>
+        {% else %}
+        <label for="swatch-{{ option_index }}-{{ value | handle | escape }}">
+          <span class="swatch-element__inner">
+            {{ value }}
+            <img 
+              class="crossed-out" 
+              src="{{ 'soldout.png' | asset_url }}" 
+              loading="lazy"
+              width="32"
+              height="32"
+            />
+          </span>
+        </label>
+        {% endif %}
+      </div>
+    {% endunless %}
+    {% if variant.available %}
+    <script>
+      window.swatchAvailable('.swatch[data-option-index="{{ option_index }}"] .{{ value | handle | escape }}');      
+    </script>
+    {% endif %}
+  {% endfor %}
+</div>
+
+{% endunless %}
+
+{% endif %}
+
+<style>
+  .tooltip {
+    visibility: hidden;
+    top: -60px;
+    left: -8px;    
+  }
+  .tooltip.is-active {
+    visibility: visible;
+  }
+  .tooltip.align-left {
+    left: -4px !important;
+    right: auto !important;
+  }
+  label[data-tooltip] {
+    position: relative;
+    color: transparent;
+  }
+</style>
+
+<script>
+  document.querySelectorAll('label[data-tooltip]').forEach(el => {
+    var tooltip = document.createElement('span');
+    tooltip.classList.add('tooltip', 'top');
+    
+    el.appendChild(tooltip);    
+    tooltip.innerHTML = el.parentNode.querySelector('input').value;    
+
+    var offset = Math.ceil( (parseInt(tooltip.offsetWidth)/2) - 20 );
+    tooltip.style.left = -offset + "px";
+    tooltip.style.right = -offset + "px";
+
+    el.addEventListener('mouseenter', (evt) => {  
+      var tip = evt.target.querySelector('.tooltip');
+      if (window.innerWidth < 750 && tip.parentNode.getAttribute('data-count') == 0) {
+        tip.classList.add('is-active', 'align-left');
+      } else {
+        tip.classList.add('is-active', 'align-center');
+      }
+    });
+    el.addEventListener('mouseleave', (evt) => {
+      evt.target.querySelector('.tooltip').classList.remove('is-active', 'align-center', 'align-left');
+    });
+    el.addEventListener('focusout', (evt) => {
+      evt.target.querySelector('.tooltip').classList.remove('is-active', 'align-center', 'align-left');
+    });
+  });
+</script>

@@ -1,0 +1,295 @@
+{%- render 'section-helper', snippet_instance: section, snippet_type: 'section', snippet_name: 'image-text', section_class: 'image-text-section', section_type: 'image-text' -%}
+
+{% schema %}
+  {
+    "name": "Image With Text",
+    "max_blocks": 3,
+    "settings": [
+      {
+        "type": "header",
+        "content": "Image Settings"
+      },
+      {
+        "type": "image_picker",
+        "id": "the_image",
+        "label": "Image"
+      },
+      {
+        "type": "range",
+        "id": "image_width",
+        "min": 30,
+        "max": 800,
+        "step": 10,
+        "unit": "px",
+        "label": "Image width (max)",
+        "default": 600
+      },
+      {
+        "type": "html",
+        "id": "svg_code",
+        "label": "SVG Image Code",
+        "info": "You can insert SVG code here. It will be used if no image is selected."
+      },
+      {
+        "type": "select",
+        "id": "alignment",
+        "label": "Image position",
+        "default": "left",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          },
+          {
+            "value": "right",
+            "label": "Right"
+          }
+        ]
+      },
+      {
+        "type": "checkbox",
+        "id": "align_horizontally",
+        "label": "Align Horizontally (center)",
+        "default": false
+      },
+      {
+        "type": "url",
+        "id": "image_click_url",
+        "label": "Make Image Clickable",
+        "info": "Specify the URL address if you want to make the image clickable."
+      },
+      {
+        "type": "header",
+        "content": "Text Settings"
+      },
+      {
+        "type": "select",
+        "id": "text_width",
+        "label": "Text Width",
+        "default": "1-2",
+        "options": [
+          {
+            "value": "1-2",
+            "label": "1/2"
+          },
+          {
+            "value": "1-3",
+            "label": "1/3"
+          },
+          {
+            "value": "2-3",
+            "label": "2/3"
+          },
+          {
+            "value": "3-4",
+            "label": "3/4"
+          }
+        ]
+      },
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Title",
+        "default": "Headline"
+      },
+      {
+        "type": "richtext",
+        "id": "text",
+        "label": "Text",
+        "default": "<p>Sample text.</p>"
+      },
+      {
+        "type": "header",
+        "content": "Mobile Settings"
+      },
+      {
+        "type": "checkbox",
+        "id": "mobile_centered",
+        "label": "Centered Content",
+        "default": false
+      },
+      {
+        "type": "header",
+        "content": "Content Style"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_custom_styles",
+        "label": "Enable Custom Styles",
+        "default": true
+      },
+      {
+        "type": "color",
+        "id": "title_color",
+        "label": "Title Color"
+      },
+      {
+        "type": "color",
+        "id": "text_color",
+        "label": "Text Color"
+      },
+      {
+        "type": "select",
+        "id": "text_shadow",
+        "label": "Text shadow effect",
+        "options": [
+          {
+            "value": "none",
+            "label": "None"
+          },
+          {
+            "value": "soft",
+            "label": "Soft"
+          },
+          {
+            "value": "medium",
+            "label": "Medium"
+          },
+          {
+            "value": "intense",
+            "label": "Intense"
+          }
+        ],
+        "default": "none"
+      },
+      {
+        "type": "range",
+        "id": "title_font_size",
+        "min": 12,
+        "max": 100,
+        "step": 1,
+        "unit": "px",
+        "label": "Section Title Size",
+        "default": 36
+      },
+      {
+        "type": "range",
+        "id": "text_font_size",
+        "min": 12,
+        "max": 55,
+        "step": 1,
+        "unit": "px",
+        "label": "Text Font Size",
+        "default": 16
+      },
+      {
+        "type": "range",
+        "id": "spacing_top",
+        "min": 0,
+        "max": 200,
+        "step": 5,
+        "unit": "px",
+        "label": "Spacing: Top",
+        "default": 50
+      },
+      {
+        "type": "range",
+        "id": "spacing_bottom",
+        "min": 0,
+        "max": 200,
+        "step": 5,
+        "unit": "px",
+        "label": "Spacing: Bottom",
+        "default": 50
+      },
+      {
+        "type": "header",
+        "content": "Background Style"
+      },
+      {
+        "type": "color",
+        "id": "background_color",
+        "label": "Background Color"
+      },
+      {
+        "type": "image_picker",
+        "id": "background_image",
+        "label": "Background Image"
+      },
+      {
+        "type": "select",
+        "id": "background_image_style",
+        "label": "Background Image Style",
+        "default": "cover",
+        "options": [
+          {
+            "value": "cover",
+            "label": "Cover"
+          },
+          {
+            "value": "repeat",
+            "label": "Repeat"
+          }
+        ]
+      },
+      {
+        "type": "checkbox",
+        "id": "parallax",
+        "label": "Enable Parallax Effect",
+        "default": false
+      },
+      {
+        "type": "range",
+        "id": "darken",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "unit": "%",
+        "label": "Darken Background",
+        "default": 0
+      }
+    ],
+    "blocks": [
+      {
+        "type": "button",
+        "name": "Button",
+        "settings": [
+          {
+            "type": "text",
+            "id": "btn_text",
+            "label": "Button Text"
+          },
+          {
+            "type": "url",
+            "id": "btn_link",
+            "label": "Button URL"
+          },
+          {
+            "type": "header",
+            "content": "Button Style"
+          },
+          {
+            "type": "select",
+            "id": "btn_style",
+            "label": "Button Style",
+            "default": "full",
+            "options": [
+              {
+                "value": "full",
+                "label": "Filled"
+              },
+              {
+                "value": "hollow",
+                "label": "Hollow"
+              }
+            ]
+          },
+          {
+            "type": "color",
+            "id": "btn_bg_color",
+            "label": "Button Background Color"
+          },
+          {
+            "type": "color",
+            "id": "btn_text_color",
+            "label": "Button Text Color"
+          }
+        ]
+      }
+    ],
+    "presets": [{
+      "name": "Image With Text",
+      "category": "Content"
+    }]
+  }
+{% endschema %}

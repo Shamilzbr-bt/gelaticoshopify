@@ -1,0 +1,103 @@
+{%- capture section_id -%} section-{{-snippet_instance.id-}} {%- endcapture -%}
+
+{% liquid 
+  if snippet_instance.settings.enable_custom_styles
+    render 'section-styles', section_id: section_id, instance_settings: snippet_instance.settings
+  endif %}
+
+{%- capture section_attributes -%}
+  {% if snippet_type == 'section' %}
+    data-section-id="{{ snippet_instance.id }}" data-section-type="hero"
+  {% else %}
+    data-block-id="{{ snippet_instance.id }}" data-block-type="hero"
+  {% endif %}
+{%- endcapture -%}
+
+{% if snippet_instance.settings.enable_custom_styles %}
+  <style>
+  #{{section_id}} .content-section {
+    min-height: {{ snippet_instance.settings.mobile_height | append: 'px' }};
+  }
+  @media print, screen and (min-width: 1024px) {
+    #{{section_id}} .content-section {
+      min-height: {{ snippet_instance.settings.desktop_height | append: 'px' }};
+    }
+  }
+  </style>
+{% endif %}
+
+{% if snippet_instance.settings.parallax and snippet_instance.settings.enable_custom_styles and snippet_instance.settings.background_video == false %}
+  {% assign parallax_class = 'section__content_parallax' %}
+{% endif %}
+<div id="{{ section_id }}" class="section {{ parallax_class }} js-animate-appear-show text-shadow__{{- snippet_instance.settings.text_shadow -}}">
+  {% if snippet_instance.settings.background_video and snippet_instance.settings.video_url != blank and snippet_instance.settings.enable_custom_styles %}
+    <div {{ section_attributes }} class="content-section hero-section hero-section_video">
+      <background-video>
+        <div id="backgroundVideo-{{ snippet_instance.id }}" class="background__video"
+          data-id="{{ snippet_instance.settings.video_url.id }}"></div>
+        <div class="background__video__overlay"></div>
+      </background-video>
+  {% else %}
+    <div class="content-section hero-section section__background">
+  {% endif %}
+    {% case snippet_instance.settings.text_width %}
+      {% when '1-2' %}
+        {% assign text_layout = 'medium-6 large-6 columns' %}
+        {% if snippet_instance.settings.alignment == 'right' %}
+          {% assign text_position = 'medium-push-6 large-push-6' %}
+        {% endif %}
+      {% when '1-3' %}
+        {% assign text_layout = 'medium-4 large-4 columns' %}
+        {% if snippet_instance.settings.alignment == 'right' %}
+          {% assign text_position = 'medium-push-8 large-push-8' %}
+        {% endif %}
+      {% when '2-3' %}
+        {% assign text_layout = 'medium-8 large-8 columns' %}
+        {% if snippet_instance.settings.alignment == 'right' %}
+          {% assign text_position = 'medium-push-4 large-push-4' %}
+        {% endif %}
+      {% when '3-4' %}
+        {% assign text_layout = 'medium-9 large-9 columns' %}
+        {% if snippet_instance.settings.alignment == 'right' %}
+          {% assign text_position = 'medium-push-3 large-push-3' %}
+        {% endif %}
+    {% endcase %}
+    <div class="background_darken"></div>
+    <div class="content-section__inner row hero__wrap hero__wrap_{{ snippet_instance.settings.alignment }} {% if snippet_instance.settings.mobile_centered %}hero_mobile-centered{% endif %}">
+      <div class="{{ text_layout }} {{ text_position }} hero__content text-{{- snippet_instance.settings.text_alignment -}}">
+        {% unless snippet_instance.settings.title == blank %}
+          <h2 class="hero__title section__title-style">
+            {{ snippet_instance.settings.title | escape }}
+          </h2>
+        {% endunless %}
+        {% unless snippet_instance.settings.text == blank %}
+          <div class="rte hero__text section__text-style">
+            {{ snippet_instance.settings.text }}
+          </div>
+        {% endunless %}
+        <div class="hero__btns">
+          {% if snippet_type == 'section' %}
+            {% for block in snippet_instance.blocks %}
+              {% if block.settings.btn_link != blank %}
+                {% assign btn_id = block.id %}
+                {% render 'button-style', snippet_instance: block, button_id: btn_id, enable_button_style: true, btn_bg_color: block.settings.btn_bg_color, btn_style: block.settings.btn_style, btn_text_color: block.settings.btn_text_color %}
+                <a id="button-{{ btn_id }}" {{ block.shopify_attributes }} href="{{ block.settings.btn_link }}" class="button white {% if block.settings.btn_style == 'hollow' %}hollow{% endif %}">{{ block.settings.btn_text }}</a>
+              {% endif %}
+            {% endfor %}
+          {% else %}
+            {% if snippet_instance.settings.btn_link1 != blank %}
+              {% assign btn_id = block.id | append: '1' %}
+              {% render 'button-style', snippet_instance: snippet_instance, button_id: btn_id, btn_bg_color: snippet_instance.settings.btn_bg_color1, btn_style: snippet_instance.settings.btn_style1, btn_text_color: snippet_instance.settings.btn_text_color1 %}
+              <a id="button-{{ btn_id }}" href="{{ snippet_instance.settings.btn_link1 }}" class="button white {% if snippet_instance.settings.btn_style1 == 'hollow' %}hollow{% endif %}">{{ snippet_instance.settings.btn_text1 }}</a>
+            {% endif %}
+            {% if snippet_instance.settings.btn_link2 != blank %}
+              {% assign btn_id = block.id | append: '2' %}
+              {% render 'button-style', snippet_instance: snippet_instance, button_id: btn_id, btn_bg_color: snippet_instance.settings.btn_bg_color2, btn_style: snippet_instance.settings.btn_style2, btn_text_color: snippet_instance.settings.btn_text_color2 %}
+              <a id="button-{{ btn_id }}" href="{{ snippet_instance.settings.btn_link2 }}" class="button white {% if snippet_instance.settings.btn_style2 == 'hollow' %}hollow{% endif %}">{{ snippet_instance.settings.btn_text2 }}</a>
+            {% endif %}
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

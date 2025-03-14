@@ -1,0 +1,17 @@
+{% assign enabled_currencies = settings.supported_currencies | split: " " %}
+
+{% if snippet_usage == 'desktop' %}
+  <select class="header__currency-switch" id="CurrencySwitch" name="currencies">
+    {% for currency_name in enabled_currencies %}
+      <option value="{{ currency_name | upcase }}">{{ currency_name | upcase }}</option>
+    {% endfor %}
+  </select>
+{% endif %}
+
+{% if snippet_usage == 'mobile' %}
+  <select class="header__currency-switch mobile-menu__currency-switch" id="CurrencySwitchMobile" name="currencies">
+    {% for currency_name in enabled_currencies %}
+      <option value="{{ currency_name | upcase }}">{{ currency_name | upcase }}</option>
+    {% endfor %}
+  </select>
+{% endif %}

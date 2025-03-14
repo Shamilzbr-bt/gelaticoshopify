@@ -1,0 +1,11 @@
+{
+  "name": "Blog Page",
+  "sections": {
+      "blog-footer": {
+          "type": "blog-footer"
+      }
+  },
+  "order": [
+      "blog-footer"
+  ]
+}

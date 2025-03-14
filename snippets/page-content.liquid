@@ -1,0 +1,23 @@
+<div class="content-section__inner page-content">    
+  <div class="row">
+    {% liquid      
+      case snippet_instance.settings.content_width
+        when '1'
+          assign content_layout = 'medium-12 large-12 columns'
+        when '1-2'
+          assign content_layout = 'medium-6 large-6 columns'
+        when '1-3'
+          assign content_layout = 'medium-6 large-4 columns'
+        when '2-3'
+          assign content_layout = 'medium-10 large-8 columns'
+        when '3-4'
+          assign content_layout = 'medium-10 large-9 columns'
+      endcase %}
+
+    <div class="{{ content_layout }} custom-page__content medium-centered large-centered">
+      <div class="rte">
+        {{ page.content }}
+      </div>
+    </div>
+  </div> 
+</div>

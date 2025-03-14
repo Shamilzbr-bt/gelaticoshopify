@@ -1,0 +1,107 @@
+<div class="{% if settings.display_collection_sidebar %}medium-9 large-9 {% endif %} columns collection-content collections-list js-animate-appear-show">
+  <div data-section-id="{{ section.id }}" data-section-type="list-collections">
+    {% unless section.settings.title == blank %}
+      <header class="row collection-header">
+        <div class="columns">
+          <h1 class="collection-title">{{ section.settings.title }}</h1>
+        </div>
+      </header>
+    {% endunless %}
+
+    {% case section.settings.grid %}
+      {% when '2' %}
+        {% assign grid_list_width = 'row small-up-1 medium-up-2 large-up-2' %}
+      {% when '3' %}
+        {% assign grid_list_width = 'row small-up-1 medium-up-3 large-up-3' %}
+      {% when '4' %}
+        {% assign grid_list_width = 'row small-up-2 medium-up-3 large-up-4' %}
+    {% endcase %}
+
+    <div class="{{ grid_list_width }}">
+      {% liquid         
+        if section.settings.display_type == 'all' 
+          for collection in collections
+            unless collection.handle == 'frontpage'
+              assign grid_item_width = 'column column-block'
+              render 'collection-grid-item', the_collection: collection, grid_item_width: grid_item_width, show_count: section.settings.show_collection_items_count
+            endunless
+          endfor
+        else
+          for block in section.blocks
+            assign grid_item_width = 'column column-block'
+            assign collection = collections[block.settings.collection]
+            render 'collection-grid-item', the_collection: collection, grid_item_width: grid_item_width, show_count: section.settings.show_collection_items_count
+          endfor
+        endif %}
+    </div>
+  </div>
+</div>
+
+
+{% schema %}
+  {
+    "name": "Collections List",
+    "settings": [
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Page Title"
+      },
+      {
+        "type": "radio",
+        "id": "display_type",
+        "label": "Select collections to show",
+        "default": "all",
+        "options": [
+          {
+            "value": "all",
+            "label": "All"
+          },
+          {
+            "value": "selected",
+            "label": "Selected"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "id": "grid",
+        "label": "Collections per row",
+        "default": "3",
+        "options": [
+          {
+            "value": "2",
+            "label": "2"
+          },
+          {
+            "value": "3",
+            "label": "3"
+          },
+          {
+            "value": "4",
+            "label": "4"
+          }
+        ]
+      },
+      {
+        "type": "checkbox",
+        "id": "show_collection_items_count",
+        "label": "Show Items Count",
+        "default": true
+      }
+    ],
+    "blocks": [
+      {
+        "type": "collection",
+        "name": "Collection",
+        "settings": [
+          {
+            "type": "collection",
+            "id": "collection",
+            "label": "Collection"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

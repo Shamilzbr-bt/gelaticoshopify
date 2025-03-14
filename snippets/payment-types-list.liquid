@@ -1,0 +1,12 @@
+{% unless shop.enabled_payment_types == empty %}
+  {%- unless shop.enabled_payment_types == empty -%}
+    <span class="visually-hidden">{{ 'layout.footer.accepted_payments' | t }}</span>
+    <ul class="menu payment-types-icons payment-icons">
+      {%- for type in shop.enabled_payment_types -%}
+        <li>
+          {{ type | payment_type_svg_tag: class: 'icon' }}
+        </li>
+      {%- endfor -%}
+    </ul>
+  {%- endunless -%}
+{% endunless %}

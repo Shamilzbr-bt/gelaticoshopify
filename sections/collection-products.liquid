@@ -1,0 +1,57 @@
+{% paginate collection.products by settings.collection_items_count %}
+<div class="{% if settings.display_collection_sidebar %}medium-9 large-9 {% endif %} columns collection-content">
+    {% if settings.display_collection_title or settings.display_collection_sorting or settings.display_collection_view_switch %}
+      <header class="row collection-header js-animate-appear-show">
+        <div class="{% if settings.display_collection_sorting or settings.display_collection_view_switch %}large-7{% endif %} columns collection__title__wrap">
+          {% if settings.display_collection_title %}
+            <h1 class="collection-title">{{ collection.title }}</h1>
+            {% if collection.description != blank %}
+              <div class="rte collection-description">
+                {{ collection.description }}
+              </div>
+            {% endif %}
+          {% else %}
+            &nbsp;
+          {% endif %}
+        </div>
+
+        <div class="large-5 columns collection-sorting">
+          <div class="sorting-controls">
+            {% render 'collection-sorting' %}
+          </div>
+        </div>
+      </header>
+    {% endif %}
+
+    {% for product in collection.products %}
+      {% if forloop.index == 1 %}
+      <div class="collection__products-grid row small-up-{{ settings.collection_row_mobile }} medium-up-{{ settings.collection_row_tablet }} large-up-{{ settings.collection_row_desktop }}">
+      {% endif %}
+        {% assign grid_item_width = 'column column-block' %}
+        {% render 'product-grid-item', the_product: product, grid_item_width: grid_item_width %}
+      {% if forloop.last %}
+      </div>
+      {% endif %}
+    {% else %}
+
+      {% if collection.handle == 'all' and current_tags == '' %}
+        {% unless emptyState %}
+          {{ 'theme-onboarding.css' | global_asset_url | stylesheet_tag }}
+          {% assign emptyState = true %}
+        {% endunless %}
+        {% render 'onboarding-empty-collection' %}
+
+      {% else %}
+        <div class="row columns">
+          <p>{{ 'collections.general.no_matches' | t }}</p>
+        </div>
+      {% endif %}
+    {% endfor %}
+
+    {% if paginate.pages > 1 %}
+      <div class="pagination">
+        {{ paginate | default_pagination | replace: '&laquo; Previous', '<span class="icon icon-angle-left"></span>' | replace: 'Next &raquo;', '<span class="icon icon-angle-right"></span>' }}
+      </div>
+    {% endif %}
+</div>
+{% endpaginate %}

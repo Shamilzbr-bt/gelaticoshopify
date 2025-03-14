@@ -1,0 +1,86 @@
+<div class="cookie-bar">
+  <div class="row columns cookie-bar__inner">
+    <div class="cookie-bar__content">
+      {% if settings.show_cookie_icon %}
+        <span class="cookie__icon">
+          <svg width="22" height="22" viewBox="0 0 51 51" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+              <g id="cookieBarIcon" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                  <g transform="translate(2.000000, 1.000000)">
+                      <path d="M45.34,24.03 C45.3565956,35.9558513 35.9359088,45.7580219 24.018789,46.2145977 C12.1016692,46.6711735 1.95860597,37.6185409 1.06267167,25.7263794 C0.166737367,13.8342178 8.83898931,3.36407289 20.69,2.03 C19.0845731,6.01175582 20.5504854,10.5720662 24.1753383,12.8725479 C27.8001912,15.1730297 32.5506579,14.5578908 35.47,11.41 C35.418813,11.7407971 35.395398,12.0752976 35.4,12.41 C35.3934161,14.7290129 36.4890714,16.9132018 38.351839,18.2944914 C40.2146066,19.675781 42.622864,20.0898323 44.84,19.41 C45.1692996,20.92803 45.336901,22.4766669 45.34,24.03 Z"  stroke="{{ settings.color_cookie_bar_text }}" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></path>
+                      <g fill="{{settings.color_cookie_bar_text}}">
+                        <path d="M32.32,34.49 C31.2154305,34.49 30.32,33.5945695 30.32,32.49 C30.32,31.3854305 31.2154305,30.49 32.32,30.49 L32.32,30.49 C33.4245695,30.49 34.32,31.3854305 34.32,32.49 C34.32,33.5945695 33.4245695,34.49 32.32,34.49 Z" fill-rule="nonzero"></path>
+                        <path d="M18.84,38.2 C17.7354305,38.2 16.84,37.3045695 16.84,36.2 C16.84,35.0954305 17.7354305,34.2 18.84,34.2 L18.84,34.2 C19.9445695,34.2 20.84,35.0954305 20.84,36.2 C20.84,37.3045695 19.9445695,38.2 18.84,38.2 Z" fill-rule="nonzero"></path>
+                        <path d="M20.84,32.2 C19.7354305,32.2 18.84,31.3045695 18.84,30.2 C18.84,29.0954305 19.7354305,28.2 20.84,28.2 L20.84,28.2 C21.9445695,28.2 22.84,29.0954305 22.84,30.2 C22.84,31.3045695 21.9445695,32.2 20.84,32.2 Z" fill-rule="nonzero"></path>
+                        <path d="M11.8,29.74 C10.6954305,29.74 9.8,28.8445695 9.8,27.74 C9.8,26.6354305 10.6954305,25.74 11.8,25.74 L11.8,25.74 C12.9045695,25.74 13.8,26.6354305 13.8,27.74 C13.8,28.8445695 12.9045695,29.74 11.8,29.74 Z" fill-rule="nonzero"></path>
+                        <path d="M14.57,22.03 C12.9131458,22.03 11.57,20.6868542 11.57,19.03 C11.57,17.3731458 12.9131458,16.03 14.57,16.03 L14.57,16.03 C16.2268542,16.03 17.57,17.3731458 17.57,19.03 C17.57,20.6868542 16.2268542,22.03 14.57,22.03 Z" fill-rule="nonzero"></path>
+                        <path d="M31.17,27.1 C29.5131458,27.1 28.17,25.7568542 28.17,24.1 C28.17,22.4431458 29.5131458,21.1 31.17,21.1 L31.17,21.1 C32.8268542,21.1 34.17,22.4431458 34.17,24.1 C34.17,25.7568542 32.8268542,27.1 31.17,27.1 Z"  fill-rule="nonzero"></path>
+                        <path d="M30,6.49 C28.3431458,6.49 27,5.14685425 27,3.49 C27,1.83314575 28.3431458,0.49 30,0.49 L30,0.49 C31.6568542,0.49 33,1.83314575 33,3.49 C33,5.14685425 31.6568542,6.49 30,6.49 Z" fill-rule="nonzero"></path>
+                        <path d="M43.11,11.55 C42.0054305,11.55 41.11,10.6545695 41.11,9.55 C41.11,8.4454305 42.0054305,7.55 43.11,7.55 L43.11,7.55 C44.2145695,7.55 45.11,8.4454305 45.11,9.55 C45.11,10.6545695 44.2145695,11.55 43.11,11.55 Z" fill-rule="nonzero"></path>
+                      </g>
+                  </g>
+              </g>
+          </svg>
+        </span>
+      {% endif %}
+
+      <div class="cookie__text rte-raw">
+        {{ settings.cookie_bar_text }}
+
+        {% if settings.cookie_page_link != blank and settings.cookie_bar_link_text != blank %}
+          <a href="{{ settings.cookie_page_link }}">{{ settings.cookie_bar_link_text }}</a>
+        {% endif %}
+      </div>
+      {% if settings.cookie_bar_button_title != blank %}
+        <a class="button tiny cookie__button {% if settings.style_cookie_bar_button == 'hollow' %}hollow{% endif %}">{{ settings.cookie_bar_button_title }}</a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<script>
+
+  if (typeof cookieBar === 'undefined' || typeof Cookies === 'undefined') {    
+    !function (e, t) { "object" == typeof exports && "undefined" != typeof module ? module.exports = t() : "function" == typeof define && define.amd ? define(t) : (e = e || self, function () { var n = e.Cookies, o = e.Cookies = t(); o.noConflict = function () { return e.Cookies = n, o } }()) }(this, (function () { "use strict"; function e(e) { for (var t = 1; t < arguments.length; t++){ var n = arguments[t]; for (var o in n) e[o] = n[o] } return e } return function t(n, o) { function r(t, r, i) { if ("undefined" != typeof document) { "number" == typeof (i = e({}, o, i)).expires && (i.expires = new Date(Date.now() + 864e5 * i.expires)), i.expires && (i.expires = i.expires.toUTCString()), t = encodeURIComponent(t).replace(/%(2[346B]|5E|60|7C)/g, decodeURIComponent).replace(/[()]/g, escape); var c = ""; for (var u in i) i[u] && (c += "; " + u, !0 !== i[u] && (c += "=" + i[u].split(";")[0])); return document.cookie = t + "=" + n.write(r, t) + c } } return Object.create({ set: r, get: function (e) { if ("undefined" != typeof document && (!arguments.length || e)) { for (var t = document.cookie ? document.cookie.split("; ") : [], o = {}, r = 0; r < t.length; r++){ var i = t[r].split("="), c = i.slice(1).join("="); try { var u = decodeURIComponent(i[0]); if (o[u] = n.read(c, u), e === u) break } catch (e) { } } return e ? o[e] : o } }, remove: function (t, n) { r(t, "", e({}, n, { expires: -1 })) }, withAttributes: function (n) { return t(this.converter, e({}, this.attributes, n)) }, withConverter: function (n) { return t(e({}, this.converter, n), this.attributes) } }, { attributes: { value: Object.freeze(o) }, converter: { value: Object.freeze(n) } }) }({ read: function (e) { return '"' === e[0] && (e = e.slice(1, -1)), e.replace(/(%[\dA-F]{2})+/gi, decodeURIComponent) }, write: function (e) { return encodeURIComponent(e).replace(/%(2[346BF]|3[AC-F]|40|5[BDE]|60|7[BCD])/g, decodeURIComponent) } }, { path: "/" }) }));    
+  }
+
+  var cookieBar = {};
+
+  cookieBar.cookie = {
+    configuration: {
+      expires: 365,
+      path: '/',
+      domain: window.location.hostname
+    },
+    name: 'cookie-bar',
+    write: function(barStatus) {
+      Cookies.set(this.name, barStatus, this.configuration);
+    },
+    read: function() {
+      return Cookies.get(this.name);
+    },
+    destroy: function() {      
+      Cookies.remove(this.name, null, this.configuration);
+    }
+  };
+
+  var cookieBarEl = document.querySelector('.cookie-bar'),
+      cookieBarStatus = cookieBar.cookie.read();
+
+  if (cookieBarStatus == 'accepted') {
+    cookieBarEl.remove();
+  } else {    
+    cookieBarEl.style.opacity = 1;
+
+    cookieBarEl.querySelector('.cookie__button').addEventListener('click', function (evt) {
+      evt.preventDefault();
+
+      cookieBarEl.style.opacity = 0;  
+      cookieBar.cookie.write('accepted');        
+      setTimeout(() => { cookieBarEl.remove(); }, 500);
+    });
+  }
+
+  {% if settings.editor_cookie_bar_show and request.design_mode %}    
+    cookieBar.cookie.destroy();    
+  {% endif %}
+</script>

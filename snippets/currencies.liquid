@@ -1,0 +1,90 @@
+<script>
+var currenciesScript = document.createElement('script');
+currenciesScript.onload = function () {                          
+  LoadCurrencies();    
+};
+currenciesScript.src = "//cdn.shopify.com/s/javascripts/currencies.js";
+document.head.appendChild(currenciesScript);         
+
+function LoadCurrencies() {
+  var script = document.createElement('script');
+  script.onload = function () {                          
+    InitCurrencyConverter();      
+  };
+  script.src = "{{ 'currencies.js' | asset_url }}";
+  document.head.appendChild(script);         
+}
+ 
+function InitCurrencyConverter() {
+  var currencySelect = document.querySelector('#CurrencySwitch');
+      currencySelectMobile = document.querySelector('#CurrencySwitchMobile');
+
+  // money_format or money_with_currency_format
+  Currency.format = 'money_format';
+
+  var shopCurrency = '{{ shop.currency }}';
+
+  /* Sometimes merchants change their shop currency, let's tell our JavaScript file */
+  Currency.moneyFormats[shopCurrency].money_with_currency_format = {{ shop.money_with_currency_format | strip_html | json }};
+  Currency.moneyFormats[shopCurrency].money_format = {{ shop.money_format | strip_html | json }};
+
+  var cookieCurrency = Currency.cookie.read();
+
+  document.querySelectorAll('span.money span.money').forEach(priceItem => {
+    if(priceItem.closest('span.money')) {
+      priceItem.closest('span.money').classList.remove('money');
+    }
+  });
+
+  // Saving the current price.
+  document.querySelectorAll('span.money').forEach(priceItem => {
+    priceItem.setAttribute('data-currency-{{ shop.currency }}', priceItem.innerHTML);
+  });
+
+  // If there's no cookie or it's the shop currency.
+  if (cookieCurrency == null || cookieCurrency === shopCurrency) {
+    currencySelect.value = shopCurrency;
+    currencySelectMobile.value = shopCurrency;
+    Currency.currentCurrency = shopCurrency;
+  }
+  else {
+    Currency.convertAll(shopCurrency, cookieCurrency);
+    currencySelect.value = cookieCurrency;
+    currencySelectMobile.value = cookieCurrency;
+  }
+
+  currencySelect.addEventListener('change', function(evt) {
+    var newCurrency = evt.target.value;
+
+    currencySelectMobile.value = newCurrency;
+    Currency.convertAll(Currency.currentCurrency, newCurrency);
+  });
+
+  currencySelectMobile.addEventListener('change', function(evt) {
+    var newCurrency = evt.target.value;
+    currencySelect.value = newCurrency;
+    Currency.convertAll(Currency.currentCurrency, newCurrency);
+  });
+
+  var variantCurrencyUpdate = function(variant, selector) {
+    document.querySelectorAll('span.money-variant-update').forEach(item => {
+      item.setAttribute('data-currency-{{ shop.currency }}', item.innerHTML);
+    });
+
+    Currency.convertAll(shopCurrency, currencySelect.value);
+  };
+  
+  document.body.addEventListener('relatedProductsLoaded', function(evt) {
+    Currency.convertAll(shopCurrency, currencySelect.value);
+  });
+
+  document.body.addEventListener('productVariantChanged', function(evt) {
+    Currency.convertAll(shopCurrency, currencySelect.value);
+  });
+
+  document.body.addEventListener('afterCartLoad.ajaxCart', function(cart) {    
+    Currency.convertAll(shopCurrency, currencySelect.value);
+  });
+}
+
+</script>

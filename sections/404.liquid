@@ -1,0 +1,20 @@
+<div class="text-center page-404">
+    <div class="row columns">
+      <h1>{{ 'general.404.title' | t }}</h1>
+      <p class="rte">{{ 'general.404.subtext_html' | t }}</p>
+    </div>
+    <div class="row columns image-404 rte">
+      {% if settings.not_found_image %}
+        <img 
+          src="{{ settings.not_found_image | img_url: '2048x' }}" alt="{{ 'general.404.title' | t }}"
+          width="{{ settings.not_found_image.width }}"
+          height="{{ settings.not_found_image.height }}"
+          loading="lazy"
+          alt=""
+        >
+      {% else %}
+        {{ '404.png' | asset_url | img_tag }}
+      {% endif %}
+    </div>
+  </div>
+  

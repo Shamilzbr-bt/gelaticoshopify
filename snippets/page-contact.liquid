@@ -1,0 +1,48 @@
+<div class="row contact__form__wrap">
+    {% if snippet_instance.settings.show_form %}
+      {%- assign text_width = 'medium-6 large-6 columns' -%}
+    {% else %}
+      {%- assign text_width = 'medium-12 large-12 columns' -%}
+    {% endif %}
+    <div class="{{ text_width }} contact__info js-animate-appear-left">
+      <div class="rte">
+        {{ page.content }}
+      </div>
+    </div>
+  
+    {% if snippet_instance.settings.show_form %}
+      <div class="medium-6 large-6 columns contact__form">
+        {% unless snippet_instance.settings.form_title == blank %}
+          <h3 class="contact__form__title">{{ snippet_instance.settings.form_title }}</h3>
+        {% endunless %}
+        <div class="contact__form__inputs">
+          {% form 'contact' %}
+  
+            {% if form.posted_successfully? %}
+              <p class="note form-success">
+                {{ 'contact.form.post_success' | t }}
+              </p>
+            {% endif %}
+  
+            {{ form.errors | default_errors }}
+  
+            {% assign name_attr = 'contact.form.name' | t | handle %}
+            <label for="ContactFormName">{{ 'contact.form.name' | t }}</label>
+            <input type="text" id="ContactFormName" class="input-full" name="contact[{{ name_attr }}]" placeholder="{{ 'contact.form.name' | t }}" autocapitalize="words" value="{% if form[name_attr] %}{{ form[name_attr] }}{% elsif customer %}{{ customer.name }}{% endif %}">
+  
+            <label for="ContactFormEmail">{{ 'contact.form.email' | t }}</label>
+            <input type="email" id="ContactFormEmail" class="input-full" name="contact[email]" placeholder="{{ 'contact.form.email' | t }}" autocorrect="off" autocapitalize="off" value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}">
+  
+            {% assign name_attr = 'contact.form.phone' | t | handle %}
+            <label for="ContactFormPhone">{{ 'contact.form.phone' | t }}</label>
+            <input type="tel" id="ContactFormPhone" class="input-full" name="contact[{{ name_attr }}]" placeholder="{{ 'contact.form.phone' | t }}" pattern="[0-9\-]*" value="{% if form[name_attr] %}{{ form[name_attr] }}{% elsif customer %}{{ customer.phone }}{% endif %}">
+  
+            <label for="ContactFormMessage">{{ 'contact.form.message' | t }}</label>
+            <textarea rows="5" id="ContactFormMessage" class="input-full" name="contact[body]" placeholder="{{ 'contact.form.message' | t }}">{% if form.body %}{{ form.body }}{% endif %}</textarea>
+  
+            <input type="submit" class="button" value="{{ 'contact.form.send' | t }}">
+          {% endform %}
+        </div>
+      </div>
+    {% endif %}
+  </div>

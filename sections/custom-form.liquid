@@ -1,0 +1,401 @@
+{%- render 'section-helper', snippet_instance: section, snippet_type: 'section', snippet_name: 'custom-form', section_class: 'contact-form-section', section_type: 'contact-form' -%}
+
+{% schema %}
+  {
+    "name": "Custom Form",
+    "settings": [
+      {
+        "type": "header",
+        "content": "General Settings"
+      },
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Section Title",
+        "default": "Custom Contact Form"
+      },
+      {
+        "type": "richtext",
+        "id": "description",
+        "label": "Description",
+        "default": "<p>Send us a message and we will get back to you shortly.</p>"
+      },
+      {
+        "type": "text",
+        "id": "button_text",
+        "label": "Button Text",
+        "default": "Submit"
+      },
+      {
+        "type": "select",
+        "id": "content_alignment",
+        "label": "Content Alignment",
+        "default": "center",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          },
+          {
+            "value": "center",
+            "label": "Center"
+          }
+        ]
+      },
+      {
+        "type": "header",
+        "content": "Content Style"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_custom_styles",
+        "label": "Enable Custom Styles",
+        "default": true
+      },
+      {
+        "type": "color",
+        "id": "title_color",
+        "label": "Title Color"
+      },
+      {
+        "type": "color",
+        "id": "text_color",
+        "label": "Text Color"
+      },
+      {
+        "type": "range",
+        "id": "title_font_size",
+        "min": 12,
+        "max": 100,
+        "step": 1,
+        "unit": "px",
+        "label": "Title Font Size",
+        "default": 21
+      },
+      {
+        "type": "range",
+        "id": "text_font_size",
+        "min": 12,
+        "max": 55,
+        "step": 1,
+        "unit": "px",
+        "label": "Text Font Size",
+        "default": 16
+      },
+      {
+        "type": "select",
+        "id": "text_shadow",
+        "label": "Text shadow effect",
+        "options": [
+          {
+            "value": "none",
+            "label": "None"
+          },
+          {
+            "value": "soft",
+            "label": "Soft"
+          },
+          {
+            "value": "medium",
+            "label": "Medium"
+          },
+          {
+            "value": "intense",
+            "label": "Intense"
+          }
+        ],
+        "default": "none"
+      },
+      {
+        "type": "range",
+        "id": "spacing_top",
+        "min": 0,
+        "max": 200,
+        "step": 5,
+        "unit": "px",
+        "label": "Spacing: Top",
+        "default": 50
+      },
+      {
+        "type": "range",
+        "id": "spacing_bottom",
+        "min": 0,
+        "max": 200,
+        "step": 5,
+        "unit": "px",
+        "label": "Spacing: Bottom",
+        "default": 50
+      },
+      {
+        "type": "header",
+        "content": "Background Style"
+      },
+      {
+        "type": "color",
+        "id": "background_color",
+        "label": "Background Color"
+      },
+      {
+        "type": "image_picker",
+        "id": "background_image",
+        "label": "Background Image"
+      },
+      {
+        "type": "select",
+        "id": "background_image_style",
+        "label": "Background Image Style",
+        "default": "cover",
+        "options": [
+          {
+            "value": "cover",
+            "label": "Cover"
+          },
+          {
+            "value": "repeat",
+            "label": "Repeat"
+          }
+        ]
+      },
+      {
+        "type": "checkbox",
+        "id": "parallax",
+        "label": "Enable Parallax Effect",
+        "default": false
+      },
+      {
+        "type": "header",
+        "content": "Form Fields Style"
+      },
+      {
+        "type": "color",
+        "id": "field_bg_color",
+        "label": "Field Background Color"
+      },
+      {
+        "type": "color",
+        "id": "field_border_color",
+        "label": "Field Border Color"
+      },
+      {
+        "type": "color",
+        "id": "field_text_color",
+        "label": "Field Text Color"
+      },
+      {
+        "type": "color",
+        "id": "field_label_color",
+        "label": "Field Label Color"
+      },
+      {
+        "type": "header",
+        "content": "Button Style"
+      },
+      {
+        "type": "select",
+        "id": "btn_style",
+        "label": "Button Style",
+        "default": "full",
+        "options": [
+          {
+            "value": "full",
+            "label": "Filled"
+          },
+          {
+            "value": "hollow",
+            "label": "Hollow"
+          }
+        ]
+      },
+      {
+        "type": "color",
+        "id": "btn_bg_color",
+        "label": "Button Background Color"
+      },
+      {
+        "type": "color",
+        "id": "btn_text_color",
+        "label": "Button Text Color"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "email",
+        "name": "Email Field",
+        "settings": [
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Label",
+            "default": "Email"
+          },
+          {
+            "type": "text",
+            "id": "placeholder",
+            "label": "Placeholder Text"
+          }
+        ]
+      },
+      {
+        "type": "field",
+        "name": "Text Field",
+        "settings": [
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Label",
+            "default": "Text Field"
+          },
+          {
+            "type": "text",
+            "id": "id",
+            "label": "Field ID",
+            "default": "TextField"
+          },
+          {
+            "type": "text",
+            "id": "placeholder",
+            "label": "Placeholder Text"
+          },
+          {
+            "type": "checkbox",
+            "id": "required",
+            "label": "Required",
+            "default": false
+          }
+        ]
+      },
+      {
+        "type": "textarea",
+        "name": "Textarea",
+        "settings": [
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Label",
+            "default": "Text area"
+          },
+          {
+            "type": "text",
+            "id": "id",
+            "label": "Field ID",
+            "default": "Textarea"
+          },
+          {
+            "type": "text",
+            "id": "placeholder",
+            "label": "Placeholder Text"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "name": "Dropdown Select",
+        "settings": [
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Label",
+            "default": "Label"
+          },
+          {
+            "type": "text",
+            "id": "id",
+            "label": "Element ID",
+            "default": "DropdownSelect"
+          },
+          {
+            "type": "text",
+            "id": "name",
+            "label": "Element Name",
+            "default": "Dropdown Select"
+          },
+          {
+            "type": "html",
+            "id": "select_items",
+            "label": "Drowdown Items",
+            "default": "Select Item 1\nSelect Item 2",
+            "info": "One item per line"
+          }
+        ]
+      },
+      {
+        "type": "checkbox",
+        "name": "Checkbox",
+        "settings": [
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Title",
+            "default": "Checkbox Title"
+          },
+          {
+            "type": "text",
+            "id": "id",
+            "label": "Field ID",
+            "default": "Checkbox"
+          },
+          {
+            "type": "text",
+            "id": "label",
+            "label": "Label",
+            "default": "Label"
+          },
+          {
+            "type": "checkbox",
+            "id": "is_checked",
+            "label": "Checked by default?",
+            "default": false
+          }
+        ]
+      },
+      {
+        "type": "radio",
+        "name": "Radio buttons",
+        "settings": [
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Label",
+            "default": "Radio Buttons"
+          },
+          {
+            "type": "text",
+            "id": "id",
+            "label": "Radio Buttons ID",
+            "default": "RadioButtons"
+          },
+          {
+            "type": "text",
+            "id": "name",
+            "label": "Radio Buttons Name",
+            "default": "Radio Buttons"
+          },
+          {
+            "type": "html",
+            "id": "radio_items",
+            "label": "Radio Inputs",
+            "default": "Radio Input 1\nRadio Input 2",
+            "info": "One item per line"
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Custom Form",
+        "category": "Forms",
+        "blocks": [
+          {
+            "type": "email"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

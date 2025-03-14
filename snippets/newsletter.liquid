@@ -1,0 +1,41 @@
+<div class="row columns js-animate-appear-show {% if snippet_instance.settings.text_align == 'center'%}text-center{% endif %}">
+  {% unless snippet_instance.settings.title == blank %}
+    <h3 class="section-title newsletter__title section__title-style">
+      {{ snippet_instance.settings.title | escape }}
+    </h3>
+  {% endunless %}
+
+  {% unless snippet_instance.settings.description == blank %}
+    <div class="newsletter__description rte-raw section__text-style">
+      {{ snippet_instance.settings.description }}
+    </div>
+  {% endunless %}
+</div>
+
+<div class="row js-animate-appear-show {% if snippet_instance.settings.text_align == 'center'%}text-center{% endif %}">
+  <div class="medium-5 large-5 columns {% if snippet_instance.settings.text_align == 'center'%}large-centered{% endif %} newsletter__form-wrap">
+    {% assign btn_id = snippet_instance.id %}
+    {% render 'button-style', snippet_instance: snippet_instance, button_id: btn_id, btn_bg_color: snippet_instance.settings.btn_bg_color, btn_style: snippet_instance.settings.btn_style, btn_text_color: snippet_instance.settings.btn_text_color %}
+    {% if snippet_instance.settings.newsletter_form_action != blank %}
+      <form action="{{ snippet_instance.settings.newsletter_form_action }}" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" target="_blank" class="input-group">
+        <div class="inline-signup newsletter__form-fields">
+          <input type="email" value="{% if customer %}{{ customer.email }}{% endif %}" placeholder="{{ 'general.newsletter_form.newsletter_email' | t }}" name="EMAIL" id="mail" class="input-group-field form__input" aria-label="{{ 'general.newsletter_form.newsletter_email' | t }}" autocapitalize="off">
+          <input id="button-{{ btn_id }}" type="submit" class="button {% if snippet_instance.settings.btn_style == 'hollow' %}hollow{% endif %}" name="subscribe"  value="{{ snippet_instance.settings.button_text }}">
+        </div>
+      </form>
+    {% else %}
+      {% form 'customer' %}
+        {{ form.errors | default_errors }}
+        {% if form.posted_successfully? %}
+          <p class="note form-success">{{ 'general.newsletter_form.confirmation' | t }}</p>
+        {% else %}
+          <div class="inline-signup newsletter__form-fields">
+            <input class="form__input" type="email" value="{% if customer %}{{ customer.email }}{% endif %}" placeholder="{{ 'general.newsletter_form.newsletter_email' | t }}" name="contact[email]" id="Email" aria-label="{{ 'general.newsletter_form.newsletter_email' | t }}" autocapitalize="off">
+            <input type="hidden" name="contact[tags]" value="newsletter">
+            <input id="button-{{ btn_id }}" type="submit" class="button {% if snippet_instance.settings.btn_style == 'hollow' %}hollow{% endif %}" name="subscribe" value="{{ snippet_instance.settings.button_text }}">
+          </div>
+        {% endif %}
+      {% endform %}
+    {% endif %}
+  </div>
+</div>

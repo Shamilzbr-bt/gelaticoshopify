@@ -1,0 +1,11 @@
+{
+  "name": "Article Page",
+  "sections": {
+      "article-footer": {
+          "type": "article-footer"
+      }
+  },
+  "order": [
+      "article-footer"
+  ]
+}

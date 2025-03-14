@@ -1,0 +1,173 @@
+<div class="universe-mega-menu-wrap">
+  <div data-hover-pane="true" data-v-offset="-20" class="dropdown-pane universe-mega-menu" id="mega-menu-{{ mega_menu_id | handleize }}" data-hover="true" data-hover-pane="true">
+    <div class="mega-menu__inner">
+      <div class="row mega-menu__grid">
+
+        {% for block in section.blocks %}
+          {% assign current_block_parent_id = block.settings.parent_id | downcase %}
+          {% if current_block_parent_id == mega_menu_id %}
+            {% case block.settings.content_width %}
+              {% when '1-4' %}
+                {% assign mega_menu_block_width = 'large-3 columns' %}
+              {% when '1-3' %}
+                {% assign mega_menu_block_width = 'large-4 columns' %}
+              {% when '1-2' %}
+                {% assign mega_menu_block_width = 'large-6 columns' %}
+              {% when '2-3' %}
+                {% assign mega_menu_block_width = 'large-8 columns' %}
+              {% when '3-4' %}
+                {% assign mega_menu_block_width = 'large-9 columns' %}
+              {% when 'full' %}
+                {% assign mega_menu_block_width = 'columns' %}
+              {% else %}
+                {% assign mega_menu_block_width = 'columns' %}
+            {% endcase %}
+
+            {% case block.type %}
+              {% when 'mega-menu-nav' %}
+                <div {{ block.shopify_attributes }} class="{{ mega_menu_block_width }} mega-menu__block mega-menu__nav">
+                  {% unless block.settings.title == blank %}
+                    <h3 class="mega-menu__block__title">{{ block.settings.title }}</h3>
+                  {% endunless %}
+
+                  <ul class="vertical menu mega-menu__nav__list">
+                    {% for link in linklists[block.settings.menu].links %}
+                      <li class="mega-menu__nav__item">
+                        <a class="mega-menu__nav__link" href="{{ link.url }}" title="{{ link.title }}">{{ link.title }}</a>
+                      </li>
+                    {% endfor %}
+                  </ul>
+                </div>
+
+              {% when 'html' %}
+                <div {{ block.shopify_attributes }} class="{{ mega_menu_block_width }} mega-menu__block mega-menu__html">
+                  {% unless block.settings.title == blank %}
+                    <h3 class="mega-menu__block__title">{{ block.settings.title }}</h3>
+                  {% endunless %}
+                  <div class="mega-menu__block__content">
+                    {{ block.settings.html }}
+                  </div>
+                </div>
+
+              {% when 'text' %}
+                <div {{ block.shopify_attributes }} class="{{ mega_menu_block_width }} mega-menu__block mega-menu__text">
+                  {% unless block.settings.title == blank %}
+                    <h3 class="mega-menu__block__title">{{ block.settings.title }}</h3>
+                  {% endunless %}
+
+                  <div class="mega-menu__block__content">
+                    {{ block.settings.text }}
+                  </div>
+
+                  {% if block.settings.show_social_links %}
+                    {% render 'social-media-links', snippet_instance: block %}
+                  {% endif %}
+                </div>
+
+              {% when 'banner' %}
+                <div {{ block.shopify_attributes }} class="{{ mega_menu_block_width }} mega-menu__block mega-menu__banner">
+                  {% unless block.settings.title == blank %}
+                    <h3 class="mega-menu__block__title">{{ block.settings.title }}</h3>
+                  {% endunless %}
+
+                  <div class="mega-menu__banner__content text-{{ block.settings.alignment }}">
+                    {% unless block.settings.banner_image == blank %}
+                      {% if block.settings.img_click_link != blank %}
+                      <a href="{{ block.settings.img_click_link }}" class="mega-menu__banner__image" title="{{ block.settings.title }}">
+                      {% else %}
+                      <div class="mega-menu__banner__image">
+                      {% endif %}
+                        <img                          
+                          src="{{ block.settings.banner_image | img_url: '1024x' }}"
+                          loading="lazy"
+                          width="{{ block.settings.banner_image.width }}"
+                          height="{{ block.settings.banner_image.height }}"          
+                          alt="{{ block.settings.title }}">
+                      {% if block.settings.img_click_link != blank %}
+                      </a>
+                      {% else %}
+                      </div>
+                      {% endif %}
+                    {% endunless %}
+
+                    {% unless block.settings.text == blank %}
+                      <div class="mega-menu__banner__text"> {{ block.settings.text }} </div>
+                    {% endunless %}
+
+                    {% if block.settings.btn_link != blank %}
+                      {% assign btn_id = block.id %}
+                      {% render 'button-style', snippet_instance: block, button_id: btn_id, enable_button_style: true, btn_bg_color: block.settings.btn_bg_color, btn_style: block.settings.btn_style, btn_text_color: block.settings.btn_text_color %}
+                      <a id="button-{{ btn_id }}" href="{{ block.settings.btn_link }}" class="button {% if block.settings.btn_style == 'hollow' %}hollow{% endif %}">{{ block.settings.btn_text }}</a>
+                    {% endif %}
+                  </div>
+                </div>
+
+              {% when 'newsletter' %}
+                <div {{ block.shopify_attributes }} class="{{ mega_menu_block_width }} mega-menu__block mega-menu__newsletter">
+                  {% unless block.settings.title == blank %}
+                    <h3 class="mega-menu__block__title">{{ block.settings.title }}</h3>
+                  {% endunless %}
+                  <div class="mega-menu__block__content">
+                    {{ block.settings.text }}
+                    {% render 'newsletter-form', snippet_instance: block %}
+                  </div>
+                </div>
+
+              {% when 'collection-widget' %}
+                <div {{ block.shopify_attributes }} class="{{ mega_menu_block_width }} mega-menu__block mega-menu__collection">
+                  {% unless block.settings.title == blank %}
+                    <h3 class="mega-menu__block__title">{{ block.settings.title }}</h3>
+                  {% endunless %}
+
+                  <div class="mega-menu__block__content">
+                    {%- assign collection = collections[block.settings.collection] -%}
+                    {% render 'collection-grid-item', grid_item_width: 'large-12', the_collection: collection, show_count: block.settings.show_collection_items_count %}
+                  </div>
+                </div>
+
+              {% when 'product-widget' %}
+                <div {{ block.shopify_attributes }} class="{{ mega_menu_block_width }} mega-menu__block mega-menu__product">
+                  {% unless block.settings.title == blank %}
+                    <h3 class="mega-menu__block__title">{{ block.settings.title }}</h3>
+                  {% endunless %}
+
+                  <div class="mega-menu__block__content">
+                    {%- assign product_item = all_products[block.settings.product] -%}
+                    {% render 'product-grid-item', the_product: product_item, grid_item_width: '' %}
+                  </div>
+                </div>
+
+              {% when 'products-widget' %}
+                {% for product in collections[block.settings.collection].products limit: block.settings.total %}
+                  <div {{ block.shopify_attributes }} class="{{ mega_menu_block_width }} mega-menu__block mega-menu__products">
+                    {% unless block.settings.title == blank %}
+                      <h3 class="mega-menu__block__title">
+                        {% if forloop.index == 1 %}
+                          {{ block.settings.title }}
+                        {% else %}
+                          &nbsp;
+                        {% endif %}
+                      </h3>
+                    {% endunless %}
+
+                    <div class="mega-menu__block__content">
+                      {% render 'product-grid-item', the_product: product, grid_item_width: '' %}
+                    </div>
+                  </div>
+                {% endfor %}
+
+              {% when 'google-maps' %}
+                <div {{ block.shopify_attributes }} class="columns mega-menu__block mega-menu__google-map">
+                  {%- render 'section-helper', snippet_instance: block, snippet_type: 'block', enable_button_style: true, snippet_name: 'google-maps', section_class: 'google-map-section', section_type: 'mega-menu-google-map' -%}
+                </div>
+
+              {% endcase %}
+
+            {% endif %}
+          {% endfor %}
+
+
+      </div>
+    </div>
+  </div>
+</div>
